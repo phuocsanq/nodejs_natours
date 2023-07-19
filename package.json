@@ -4,6 +4,7 @@
   "description": "node, express and mongodb",
   "main": "app.js",
   "scripts": {
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/phuocsanq/nodejs_natours/issues"
   },
-  "homepage": "https://github.com/phuocsanq/nodejs_natours#readme"
+  "homepage": "https://github.com/phuocsanq/nodejs_natours#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^3.0.1"
+  }
 }
