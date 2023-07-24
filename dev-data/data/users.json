@@ -171,15 +171,6 @@
     "password": "$2a$12$11JElTatQlAFo1Obw/dwd..vuVmQyYS7MT14pkl3lRvVPjGA00G8O"
   },
   {
-    "_id": 20,
-    "name": "Lisa Brown",
-    "email": "lisa@example.com",
-    "role": "user",
-    "active": true,
-    "photo": "user-20.jpg",
-    "password": "$2a$12$uA9FsDw63v6dkJKGlLQ/8ufYBs8euB7kqIQewyYlZXU5azEKeLEky"
-  },
-  {
     "_id": 21,
     "name": "messi",
     "email": "lisa@example.com",

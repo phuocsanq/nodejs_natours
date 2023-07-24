@@ -2,6 +2,17 @@ const fs = require('fs');
 
 const users = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/users.json`));
 
+exports.checkID = (req, res, next, val) => {
+    const user = users.find(user => user.id === val * 1);
+    if(!user) {
+        res.status(404).json({
+            status : 'fail',
+            message: 'Invalid ID'
+        })
+    }
+    next();
+}
+
 exports.getAllUsers = (req, res) => {
     res.status(200).json({
         status : 'success',
@@ -61,3 +72,28 @@ exports.updateUser = (req, res) => {
         })
     })
 }
+
+exports.deleteUser = (req, res) => {
+    const id = req.params.id * 1;
+
+    const user = users.find(user => user._id === id);
+    if(!user) {
+        res.status(404).json({
+            status : 'fail',
+            message : 'Invalid ID'
+        })
+    }
+
+    const deletedUsers = users.filter(user => user._id != id);
+
+    fs.writeFile(`${__dirname}/../dev-data/data/users.json`, JSON.stringify(deletedUsers, null, 2), err => {
+        res.status(200).json({
+            status: 'success',
+            data: {deleted: user}
+        })
+    })
+}
+
+
+
+
