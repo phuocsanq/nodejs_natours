@@ -194,5 +194,11 @@
     "name": "Japan",
     "duration": 3,
     "maxGroupSize": 12
+  },
+  {
+    "id": 11,
+    "name": "Test tour",
+    "duration": 3,
+    "maxGroupSize": 12
   }
 ]
