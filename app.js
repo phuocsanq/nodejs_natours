@@ -24,7 +24,6 @@ app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
 
+module.exports = app;
+
 // START SERVER
-app.listen(9000, () => {
-    console.log('App listening on port 9000...');
-})
