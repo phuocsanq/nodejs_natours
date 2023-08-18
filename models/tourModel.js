@@ -9,6 +9,10 @@ const tourSchema = new mongoose.Schema({
         trim: true
     },
     slug : String,
+    secretTour: {
+        type: Boolean,
+        default: false
+    },
     duration: {
         type: Number,
         require: [true, 'A tour must have a duration']
@@ -76,6 +80,16 @@ tourSchema.pre('save', function(next) {
 //     console.log(doc);
 //     next();
 // })
+// QUERY MIDDLEWARE
+tourSchema.pre(/^find/, function(next) {
+    this.find({ secretTour: { $ne: true }});
+    next();
+})
+// AGGREGATE MIDDLEWARE
+tourSchema.pre('aggregate', function(next) {
+    this.pipeline().unshift({$match: {secretTour: {$ne: true}}});
+    next();
+})
 
 const Tour = mongoose.model('Tour', tourSchema);
 
