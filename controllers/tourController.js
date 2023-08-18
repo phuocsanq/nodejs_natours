@@ -46,7 +46,6 @@ exports.createTour = async (req, res) => {
             message: err
         })
     }
-
 }
 exports.getTour = async (req, res) => {
     try{
@@ -135,7 +134,6 @@ exports.getTourStats = async (req, res) => {
         }) 
     }
 }
-
 exports.getMonthlyPlan = async (req, res) => {
     try {
         const year = req.params.year * 1;
