@@ -20,6 +20,7 @@ app.use((req, res, next) => {                           // my middleware
 })
 app.use((req, res, next) => {                           // my middleware
     req.requestTime = new Date().toISOString();
+    // console.log(req.headers);
     next();
 })
 
