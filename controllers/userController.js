@@ -1,98 +1,43 @@
-const fs = require('fs');
+const User = require('./../models/userModel');
+const catchAsync = require('./../utils/catchAsync');
 
-const users = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/users.json`));
+// exports.checkID = (req, res, next, val) => {
+//     // const user = users.find(user => user.id === val * 1);
+//     // if(!user) {
+//     //     res.status(404).json({
+//     //         status : 'fail',
+//     //         message: 'Invalid ID'
+//     //     })
+//     // }
+//     // next();
+// }
 
-exports.checkID = (req, res, next, val) => {
-    const user = users.find(user => user.id === val * 1);
-    if(!user) {
-        res.status(404).json({
-            status : 'fail',
-            message: 'Invalid ID'
-        })
-    }
-    next();
-}
-
-exports.getAllUsers = (req, res) => {
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+    const users = await User.find();
     res.status(200).json({
-        status : 'success',
-        results : users.length,
-        data : { users }
+        status: 'success',
+        results: users.length,
+        data: {
+            users
+        }
     })
-}
+});
 
-exports.getUser = (req, res) => {
-    const id = req.params.id * 1;   
-    const user = users.find(el => el._id === id);
-    if(!user) {
-        res.status(404).json({
-            status : 'fail',
-            message : 'Invalid ID'
-        })
-    }
-    res.status(200).json({
-        status : 'success',
-        data : { user }
-    })
-}
+// exports.getUser = (req, res) => {
+   
+// }
 
-exports.createUser = (req, res) => {
-    const newId = users[users.length - 1]._id + 1;
-    const newUser = Object.assign({ _id : newId}, req.body);
-    users.push(newUser);
+// exports.createUser = (req, res) => {
+    
+// }
 
-    fs.writeFile(`${__dirname}/../dev-data/data/users.json`, JSON.stringify(users, null, 2), err => {
-        res.status(201).json({
-            status: 'success',
-            data : { newUser }
-        })
-    })
-}
+// exports.updateUser = (req, res) => {
+   
+// }
 
-exports.updateUser = (req, res) => {
-    const id = req.params.id * 1;
-    const user = users.find(el => el._id === id);
-    if(!user) {
-        res.status(404).json({
-            status : 'fail',
-            message : 'Invalid ID'
-        })
-    }
-
-    const newUser = {...user, ...req.body};
-
-    const newUsers = users.map(user => 
-        user._id === newUser._id ? newUser : user
-    )
-
-    fs.writeFile(`${__dirname}/../dev-data/data/users.json`, JSON.stringify(newUsers, null, 2), err => {
-        res.status(201).json({
-            status: 'success',
-            data : { updatedUser : newUser }
-        })
-    })
-}
-
-exports.deleteUser = (req, res) => {
-    const id = req.params.id * 1;
-
-    const user = users.find(user => user._id === id);
-    if(!user) {
-        res.status(404).json({
-            status : 'fail',
-            message : 'Invalid ID'
-        })
-    }
-
-    const deletedUsers = users.filter(user => user._id != id);
-
-    fs.writeFile(`${__dirname}/../dev-data/data/users.json`, JSON.stringify(deletedUsers, null, 2), err => {
-        res.status(200).json({
-            status: 'success',
-            data: {deleted: user}
-        })
-    })
-}
+// exports.deleteUser = (req, res) => {
+    
+// }
 
 
 
