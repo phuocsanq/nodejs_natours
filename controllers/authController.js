@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const sendEmail = require('../utils/email');
 const util = require('util');
 const jwt = require('jsonwebtoken');
@@ -77,7 +78,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     };
 
     req.user = currentUser;
-        
+
     next();
 });
 
@@ -124,4 +125,49 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
         await user.save({ validateBeforeSave: false });
         return next(new AppError('There was an error sending the email. Try again later!', 500));
     }
+});
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+    // 1) get user base on the token
+    const hashtoken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+    const user = await User.findOne({ passwordResetToken: hashtoken, passwordResetExpires: { $gt: Date.now() }});
+    if(!user) {
+        return next(new AppError('Invalid token or expired. Try again', 400));
+    }
+    // 2) if token has not expired, and there is user, set new password
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    
+    await user.save();
+        
+    // 3) update passwordChangedAt property for the user
+    // 4) log the user in, send JWT
+    const token = signToken(user._id);
+    res.status(200).json({
+        status: 'success',
+        token
+    })
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+
+    const user = await User.findById(req.user.id).select('+password');
+    
+    if(!(await user.isCorrectPassword(req.body.currentPassword, user.password))) {
+        return next(new AppError('Your current password is wrong', 401));
+    }
+
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    await user.save();
+    // await user.findByIdAndUpdate will not work with midleware and validator
+
+    const token = signToken(user._id);
+    res.status(200).json({
+        status: 'success',
+        token
+    })
 });
