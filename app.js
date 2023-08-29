@@ -1,3 +1,4 @@
+const rateLimit = require('express-rate-limit');
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
@@ -7,10 +8,19 @@ const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
-// MIDDLEWARE
+// GLOBAL MIDDLEWARE
 if(process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
+
+// Brute Force Attack
+const limiter = rateLimit({
+    max: 100,                 // Limit each IP to 100 requests per `window` (here, per 1 hour)
+    windowMs: 60 * 60 * 1000, // 1 hour
+    message: 'Too many requests from this IP. Try again after an hour'
+});
+app.use('/api', limiter); // Apply the rate limiting middleware to API calls only
+
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));   // because when we open up a URL that it can't find in any of our routes, it will then look in that public folder that we defined. And it sets that folder to the root.
 

@@ -20,7 +20,6 @@ const createSendToken = (user, statusCode, res) => {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
         httpOnly: true                     // cannot be accessed or modified in any way by the browser.
     };
-
     if(process.env.NODE_ENV === 'production') cookieOptions.secure = true; // secure: true, the cookie would not be created and not be sent to the client.
     
     res.cookie('jwt', token, cookieOptions);  
