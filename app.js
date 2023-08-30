@@ -1,3 +1,4 @@
+const hpp = require('hpp');
 const mongoSanitize= require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const helmet = require('helmet');
@@ -36,6 +37,11 @@ app.use(mongoSanitize());
 // data sanitizaton against XSS
 app.use(xss());
 
+// prevent parameter pollution
+app.use(hpp({
+    whitelist: ['duration', 'maxGroupSize', 'difficulty', 'ratingsAverage', 'ratingsQuantity', 'price']
+}));
+
 // serving static file
 app.use(express.static(`${__dirname}/public`));   // because when we open up a URL that it can't find in any of our routes, it will then look in that public folder that we defined. And it sets that folder to the root.
 
@@ -55,9 +61,6 @@ app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
 app.all('*', (req, res, next) => {
-    // const err = new Error(`Can't find ${req.originalUrl} on this server`);
-    // err.statusCode = 404;
-    // err.status = 'fail';
     next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
 });
 
