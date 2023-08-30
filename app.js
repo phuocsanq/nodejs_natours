@@ -1,3 +1,6 @@
+const mongoSanitize= require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const express = require('express');
 const app = express();
@@ -9,6 +12,9 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
 // GLOBAL MIDDLEWARE
+// set security http headers
+app.use(helmet());
+
 if(process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
@@ -21,14 +27,24 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter); // Apply the rate limiting middleware to API calls only
 
+// Body parser, reading data from body into req.body
 app.use(express.json());
+
+// data sanitizaton against NoSQL query Injection
+app.use(mongoSanitize());
+
+// data sanitizaton against XSS
+app.use(xss());
+
+// serving static file
 app.use(express.static(`${__dirname}/public`));   // because when we open up a URL that it can't find in any of our routes, it will then look in that public folder that we defined. And it sets that folder to the root.
 
-app.use((req, res, next) => {                           // my middleware
+// test middleware
+app.use((req, res, next) => {                           
     console.log('Hello from the middleware!');
     next();
 })
-app.use((req, res, next) => {                           // my middleware
+app.use((req, res, next) => {                           
     req.requestTime = new Date().toISOString();
     // console.log(req.headers);
     next();
