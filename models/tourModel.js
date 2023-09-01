@@ -80,7 +80,7 @@ const tourSchema = new mongoose.Schema({
             default: 'Point',
             enum: ['Point']
         },
-        Coordinates: [Number],
+        coordinates: [Number],
         address: String,
         description: String
     },
@@ -91,10 +91,16 @@ const tourSchema = new mongoose.Schema({
             default: 'Point',
             enum: ['Point']
         },
-        Coordinates: [Number],
+        coordinates: [Number],
         address: String,
         description: String,
         day: Number
+        }
+    ],
+    guides: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: 'User'
         }
     ]
 }, {
@@ -123,7 +129,16 @@ tourSchema.pre('save', function(next) {
 tourSchema.pre(/^find/, function(next) {
     this.find({ secretTour: { $ne: true }});
     next();
-})
+});
+
+tourSchema.pre(/^find/, function(next) {
+    this.populate({
+        path: 'guides',
+        select: '-__v -passwordChangedAt'   // of user
+    })
+    next();
+});
+
 // AGGREGATE MIDDLEWARE
 tourSchema.pre('aggregate', function(next) {
     this.pipeline().unshift({$match: {secretTour: {$ne: true}}});
