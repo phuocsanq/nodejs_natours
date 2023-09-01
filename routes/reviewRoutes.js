@@ -1,8 +1,10 @@
-const express = require('express');
-const router = express.Router();
 const reviewController = require('../controllers/reviewController');
 const authController = require('../controllers/authController');
+const express = require('express');
+const router = express.Router({mergeParams: true}); // each router only have access to params of their specific routes
 
+// POST /tour/232333/reviews
+// POST /reviews
 router
     .route('/')
     .get(reviewController.getAllReviews)

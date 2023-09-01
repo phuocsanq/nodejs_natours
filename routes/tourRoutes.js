@@ -3,9 +3,12 @@ const router = express.Router();
 
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
-const reviewController = require('../controllers/reviewController');
+const reviewRoutes = require('../routes/reviewRoutes');
 
 // router.param('id', tourController.checkID);         // param midlerware
+
+router.use('/:tourId/reviews', reviewRoutes);
+    
 router
     .route('/top-5-cheap')
     .get(tourController.aliasTours, tourController.getAllTours);
@@ -24,10 +27,5 @@ router
     .get(tourController.getTour)
     .patch(tourController.updateTour)
     .delete(authController.protect, authController.restrictTo('admin', 'lead-guide'), tourController.deleteTour);
-
-// POST /tour/232333/reviews
-router
-    .route('/:tourId/reviews')
-    .post(authController.protect, authController.restrictTo('user'), reviewController.createReview);
 
 module.exports = router;
