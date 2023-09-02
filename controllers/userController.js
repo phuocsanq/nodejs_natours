@@ -2,17 +2,6 @@ const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('../utils/appError');
 
-// exports.checkID = (req, res, next, val) => {
-//     // const user = users.find(user => user.id === val * 1);
-//     // if(!user) {
-//     //     res.status(404).json({
-//     //         status : 'fail',
-//     //         message: 'Invalid ID'
-//     //     })
-//     // }
-//     // next();
-// }
-
 const filterObj = (obj, ...allowedFields) => {
     const newObj = {};
     Object.keys(obj).forEach(el => {
@@ -31,6 +20,20 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
         }
     })
 });
+
+exports.getUser = catchAsync(async (req, res, next) => {
+    const user = await User.findById(req.params.id);  
+    if(!user) {
+        return next(new AppError('No user found with that ID', 404));     // to global err handler
+    }
+        res.status(200).json({
+            status: 'success',
+            data: {
+                user : user
+            }
+        })
+});
+
 
 exports.updateMe = catchAsync(async (req, res, next) => {
     
@@ -52,6 +55,22 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     })
 });
 
+exports.updateUser = catchAsync(async (req, res, next) => {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true
+    });
+    if(!user) {
+        return next(new AppError('No user found with that ID', 404));     // to global err handler
+    }
+    res.status(200).json({
+        status: 'success',
+        data: {
+            user
+        }
+    })
+});
+
 exports.deleteMe = catchAsync(async (req, res, next) => {
     await User.findByIdAndUpdate(req.user.id, { active: false });
 
@@ -59,6 +78,17 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
         status: 'success',
         data: null
     })
+});
+
+exports.deleteUser = catchAsync(async (req, res, next) => {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if(!user) {
+        return next(new AppError('No user found with that ID', 404));     // to global err handler
+    }
+        res.status(204).json({
+            status: 'success',
+            data: null
+        })
 });
 
 
