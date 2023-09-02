@@ -8,7 +8,7 @@ const filterObj = (obj, ...allowedFields) => {
         if(allowedFields.includes(el)) newObj[el] = obj[el];
     });
     return newObj;
-}
+};
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
     const users = await User.find();
@@ -34,6 +34,10 @@ exports.getUser = catchAsync(async (req, res, next) => {
         })
 });
 
+exports.getMe = catchAsync(async (req, res, next) => {
+    req.params.id = req.user.id;
+    next();
+});
 
 exports.updateMe = catchAsync(async (req, res, next) => {
     
@@ -91,37 +95,6 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
         })
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// exports.getUser = (req, res) => {
-   
-// }
-
-// exports.createUser = (req, res) => {
-    
-// }
-
-// exports.updateUser = (req, res) => {
-   
-// }
-
-// exports.deleteUser = (req, res) => {
-    
-// }
 
 
 

@@ -7,15 +7,16 @@ const router = express.Router({mergeParams: true}); // each router only have acc
 // GET  /reviews
 // POST /tour/232333/reviews
 // POST /reviews
-router
+router.use(authController.protect);
+router 
     .route('/')
     .get(reviewController.getAllReviews)
-    .post(authController.protect, authController.restrictTo('user'), reviewController.createReview);
+    .post(authController.restrictTo('user'), reviewController.createReview);
 
 router
     .route('/:id')
     .get(reviewController.getReview)
-    .delete(reviewController.deleteReview)
-    .patch(reviewController.updateReview);
+    .patch(authController.restrictTo('user', 'admin'), reviewController.updateReview)
+    .delete(authController.restrictTo('user', 'admin'), reviewController.deleteReview);
 
 module.exports = router;
