@@ -46,15 +46,42 @@ reviewSchema.statics.calcRatingsAverage = async function(tourId) {
     ]);
     // console.log(stats);
 
-    await Tour.findByIdAndUpdate(tourId, {
-        ratingsQuantity: stats[0].nRating,
-        ratingsAverage: stats[0].avgRating
-    })
+    if(stats.length > 0) {
+        await Tour.findByIdAndUpdate(tourId, {
+            ratingsQuantity: stats[0].nRating,
+            ratingsAverage: stats[0].avgRating
+        })
+    } else {
+        await Tour.findByIdAndUpdate(tourId, {
+            ratingsQuantity: 0,
+            ratingsAverage: 4.5
+        })
+    }
 };
 
 reviewSchema.post('save', function() {
     this.constructor.calcRatingsAverage(this.tour);   // this:              Specific object - is a review object that has been saved to the database. THIS here points to an entity of the review being saved.
                                                       // this.constructor:  reference to the constructor function of the review object (in this case, the Review model).
+});
+
+// findByIdAndUpdate
+// findByIdAndDelete
+reviewSchema.pre(/^findOneAnd/, async function(next) {
+    // this.r = await this.findOne().clone();     // if want to execute a query twice use clone()
+    // console.log('pre');
+    // next();
+
+    this.r = await this.model.findOne(this.getQuery()); //  getQuery() Returns the query condition that has been set in the current query.
+    // console.log(this.getQuery());
+    next();
+});
+
+// reviewSchema.post(/^findOneAnd/, function() {
+//     console.log('post');
+// });
+
+reviewSchema.post(/^findOneAnd/, async function(doc) {
+    await this.model.calcRatingsAverage(this.r.tour); 
 });
 
 reviewSchema.pre(/^find/, function(next) {
@@ -70,7 +97,7 @@ reviewSchema.pre(/^find/, function(next) {
         select: 'name photo'
     });
     next();
-})
+});
 
 const Review = mongoose.model('Review', reviewSchema);
 module.exports = Review;
