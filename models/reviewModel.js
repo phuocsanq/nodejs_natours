@@ -31,6 +31,8 @@ const reviewSchema = new mongoose.Schema({
     toObject: {virtuals: true}
 });
 
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 reviewSchema.statics.calcRatingsAverage = async function(tourId) {
     const stats = await this.aggregate([             // this: current Model
         {
@@ -75,10 +77,6 @@ reviewSchema.pre(/^findOneAnd/, async function(next) {
     // console.log(this.getQuery());
     next();
 });
-
-// reviewSchema.post(/^findOneAnd/, function() {
-//     console.log('post');
-// });
 
 reviewSchema.post(/^findOneAnd/, async function(doc) {
     await this.model.calcRatingsAverage(this.r.tour); 
