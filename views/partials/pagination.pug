@@ -1,0 +1,11 @@
+nav(aria-label="Page navigation example")
+  ul.pagination
+    li.page-item
+      a.page-link.pagination-left(class=(pagination.currentPage === 1 ? 'disabled' : ''), href="#", aria-label="Previous", data-page=`${pagination.currentPage - 1}`)
+        span(aria-hidden="true") &laquo;
+    each pageNumber in pagination.pages
+      li.page-item(class=(pageNumber === pagination.currentPage ? 'active' : ''))
+        a.page-link(href="#", data-page=pageNumber)= pageNumber
+    li.page-item
+      a.page-link.pagination-right(class=(pagination.currentPage === pagination.totalPages ? 'disabled' : ''), href="#", aria-label="Next", data-page=`${pagination.currentPage + 1}`)
+        span(aria-hidden="true") &raquo;

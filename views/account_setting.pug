@@ -1,0 +1,41 @@
+extends account
+
+block content_account
+    .user-view__form-container
+        h2.heading-secondary.ma-bt-md Cài đặt tài khoản
+        
+        //- WITHOUT API
+        //- form.form.form-user-data(action='/submit-user-data' method='POST' enctype='multipart/form-data')
+        
+        //- WITH API
+        form.form.form-user-data
+            .form__group
+                label.form__label(for='name') Tên
+                input#name.form__input(type='text', value=`${user.name}`, required, name='name')
+            .form__group.ma-bt-md
+                label.form__label(for='email') Email
+                input#email.form__input(readonly, type='email', value=`${user.email}`, required, name='email')
+            .form__group.form__photo-upload
+                img.form__user-photo(src=`/img/users/${user.photo}`, alt='User photo')
+                input.form__upload(type='file', accept='image/*', id='photo', name='photo')
+                label(for='photo') Chọn ảnh mới
+                
+            .form__group.right
+                button.my-btn.btn--small.btn--green Lưu
+              
+    .line &nbsp;
+    
+    .user-view__form-container2
+        h2.heading-secondary.ma-bt-md Đổi mật khẩu
+        form.form.form-user-password
+            .form__group
+                label.form__label(for='password-current') Mật khẩu hiện tại
+                input#password-current.form__input(type='password', placeholder='••••••••', required, minlength='8')
+            .form__group
+                label.form__label(for='password') Mật khẩu mới
+                input#password.form__input(type='password', placeholder='••••••••', required, minlength='8')
+            .form__group.ma-bt-lg
+                label.form__label(for='password-confirm') Xác nhận mật khẩu
+                input#password-confirm.form__input(type='password', placeholder='••••••••', required, minlength='8')
+            .form__group.right
+                button.my-btn.btn--small.btn--green.btn--save-password Lưu

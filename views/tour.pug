@@ -6,14 +6,258 @@ block append head
   //- link(href='https://unpkg.com/leaflet@1.7.1/dist/leaflet.css' rel='stylesheet')
   script(src='/js/dist_leaflet.js')
   link(href='/css/dist_leaflet.css' rel='stylesheet')
-  script(src='/js/openstreetmap.js')
+  //- script(src='/js/openstreetmap.js')
+  link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/css/bootstrap.min.css" integrity="sha512-Ez0cGzNzHR1tYAv56860NLspgUGuQw16GiOOp/I2LuTmpSK9xDXlgJz3XN4cnpXWDmkNBKXR/VDMTCnAaEooxA==" crossorigin="anonymous" referrerpolicy="no-referrer")
+  //- link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous")
+  //- link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/css/bootstrap.min.css" integrity="sha512-Ez0cGzNzHR1tYAv56860NLspgUGuQw16GiOOp/I2LuTmpSK9xDXlgJz3XN4cnpXWDmkNBKXR/VDMTCnAaEooxA==" crossorigin="anonymous" referrerpolicy="no-referrer")
+  style.
+   
+
+
+    .section-itineraries .row {
+        background: #fff;
+        border: 1px solid #e7e7e7;
+        border-radius: 10px;
+    }
+    
+    //- left
+    @media (min-width: 768px) {
+        .col-md-4 {
+            flex: 0 0 auto;
+            width: 33.33333%;
+        }
+    }
+
+    .d-none {
+      display: none !important;
+    }
+
+    @media (min-width: 768px) {
+        .d-md-block {
+            display: block !important;
+        }
+    }
+
+    .col-12 {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+
+    .section-itineraries .left, .section-itineraries .left .go-tour .day {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+    }
+
+    .section-itineraries .left {
+        background: #f9f9f9;
+        border-radius: 10px 0 0 10px;
+        flex-direction: column;
+        padding: 38px 1rem;
+    }
+    .section-itineraries .left .go-tour .day {
+        align-items: center;
+        padding-bottom: 34px;
+    }
+    .section-itineraries .left .go-tour .day:before {
+        border-left: .5px dashed #2d4271;
+        content: "";
+        height: 100%;
+        left: 52px;
+        position: absolute;
+        top: 0;
+        z-index: 0;
+    }
+
+    *, :after, :before {
+        box-sizing: border-box;
+    }
+    .section-itineraries .left .go-tour .day .wrapper {
+        align-items: center;
+        display: flex;
+    }
+
+    .section-itineraries .left .go-tour .day .wrapper .date-left {
+        width: 40px;
+    }
+
+    .section-itineraries .left .go-tour .day .wrapper .date-center {
+        align-items: center;
+        background: #fff;
+        background: #e01600;
+        border: 1px solid #e01600;
+        border-radius: 50%;
+        color: #2d4271;
+        color: #fff;
+        cursor: pointer;
+        display: flex;
+        height: 24px;
+        justify-content: center;
+        position: relative;
+        width: 24px;
+        z-index: 1;
+    }
+
+    .section-itineraries .left .go-tour .day .wrapper .date-right {
+        display: flex;
+        flex-direction: column;
+        padding-left: 10px;
+        width: calc(100% - 64px);
+    }
+    .date {
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    
+
+    //- right
+
+    .section-itineraries .my-right {
+        padding: 38px 42px 38px 28px;
+    }
+    @media (min-width: 768px) {
+        .col-md-8 {
+            flex: 0 0 auto;
+            width: 66.66667%;
+        }
+    }
+    .section-itineraries .my-right {
+        padding: 38px 42px 38px 28px;
+        padding-top: 38px;
+        padding-right: 42px;
+        padding-bottom: 38px;
+        padding-left: 28px;
+    }
+
+    div {
+        display: block;
+        unicode-bidi: isolate;
+    }
+
+    .section-itineraries .my-right h3 {
+        font-size: 20px;
+        line-height: 40px;
+    }
+
+    h2, h3 {
+        font-size: 20px;
+        line-height: 40px;
+    }
+    .h3, h3 {
+        font-size: calc(1.3rem + .6vw);
+    }
+    .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        font-weight: 500;
+        line-height: 1.2;
+        margin-bottom: .5rem;
+        margin-top: 0;
+    }
+
+    .section-itineraries .my-right .excerpt {
+        line-height: 24px;
+        margin-bottom: 15px;
+        max-width: 100%;
+        padding-left: 33px;
+        position: relative;
+    }
+
+
+    .section-itineraries .my-right .excerpt .my-line {
+        border-left: .5px dashed #4d4aef;
+        height: calc(100% - 16px);
+        left: 0;
+        position: absolute;
+        top: 6px;
+        z-index: 1;
+    }
+
+    .section-itineraries .my-right .excerpt .my-line:after, .section-itineraries .my-right .excerpt .my-line:before {
+        background: #4d4aef;
+        border-radius: 50%;
+        content: "";
+        height: 5px;
+        left: -3px;
+        position: absolute;
+        width: 5px;
+        z-index: 1;
+    }
+
+    .section-itineraries .my-right .excerpt .my-line:before {
+        top: 0;
+    }
+
+    .section-itineraries .my-right .excerpt .my-line:after {
+        top: 100%;
+    }
+
+    .my-container {
+      width: 80%;
+      display: flex;
+      flex-direction: column;
+      padding: 10px; /* Adjust as needed */
+
+      margin-top: 9vw;
+      margin-bottom: 9vw;
+      font-size: 1.5rem;
+      color: #2d4271;
+    }
+    h3 {
+        display: block;
+        font-size: 1.17em;
+        margin-block-start: 1em;
+        margin-block-end: 1em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        font-weight: bold;
+        unicode-bidi: isolate;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .col-md-4  {
+      flex: 1 1 100%; /* Full width by default */
+      order: 1; /* Sidebar appears first by default */
+    }
+    .col-md-8 {
+      flex: 1 1 100%; /* Full width by default */
+      order: 2; /* Main content appears second by default */
+    }
+    /* Media query for larger screens */
+    @media (min-width: 768px) {
+      .col-md-4 {
+        flex: 0 0 30%; /* 2 out of 12 columns equivalent */
+        max-width: 30%; /* Ensure it doesn't grow larger */
+      }
+
+      .col-md-8 {
+        flex: 0 0 70%; /* 10 out of 12 columns equivalent */
+        max-width: 70%; /* Ensure it doesn't grow larger */
+      }
+    }
+
+    .location {
+      font-weight: bold;
+      color: #333;
+    }
+
 
 mixin overviewBox(label, text, icon)
   .overview-box__detail
     svg.overview-box__icon
       use(xlink:href=`/img/icons.svg#icon-${icon}`)
     span.overview-box__label= label
-    span.overview-box__text= text
+    - if(text === tour)
+      - if(text.priceDiscount > 0)
+        del.span.overview-box__text= `${text.price.toLocaleString('vi-VN')} ₫`
+        | &nbsp &nbsp
+        span.overview-box__text= `${(text.price * (1 - text.priceDiscount / 100)).toLocaleString('vi-VN')} ₫`
+        | &nbsp &nbsp
+        span.overview-box__text= `(Giảm ${text.priceDiscount}%)`
+      - else 
+        span.overview-box__text= `${text.price.toLocaleString('vi-VN')} ₫`
+    - else 
+      span.overview-box__text= text
 
 block content
   section.section-header
@@ -23,12 +267,12 @@ block content
 
     .heading-box
       h1.heading-primary
-        span= `${tour.name} tour`
+        span= `${tour.name}`
       .heading-box__group
         .heading-box__detail
           svg.heading-box__icon
             use(xlink:href='/img/icons.svg#icon-clock')
-          span.heading-box__text= `${tour.duration} days`
+          span.heading-box__text= `${tour.duration} ngày ${tour.duration - 1} đêm`
         .heading-box__detail
           svg.heading-box__icon
             use(xlink:href='/img/icons.svg#icon-map-pin')
@@ -38,29 +282,31 @@ block content
     .overview-box
       div
         .overview-box__group
-          h2.heading-secondary.ma-bt-lg Quick facts
+          h2.heading-secondary.ma-bt-lg Thông tin nhanh
 
-          - const date = tour.startDates[0].toLocaleString('en-us', {month: 'long', year: 'numeric'})
-          +overviewBox('Next date', date, 'calendar')
-          +overviewBox('Difficulty', tour.difficulty, 'trending-up')
-          +overviewBox('Participants', `${tour.maxGroupSize} people`, 'user')
-          +overviewBox('Rating', `${tour.ratingsAverage} / 5`, 'star')
+          - const date = tour.startDate.toLocaleString('vi', {day: 'numeric', month: 'long', year: 'numeric'})
+          +overviewBox('Khởi hành', date, 'calendar')
+          +overviewBox('Điểm dừng', `${tour.itineraries.length}`, 'flag')
+          //- +overviewBox('Difficulty', tour.difficulty, 'trending-up')
+          +overviewBox('Đánh giá', `${tour.ratingsAverage} / 5`, 'star')
+          +overviewBox('Số chỗ còn nhận', `${tour.maxGroupSize - tour.currentGroupSize}`, 'user')
+          +overviewBox('Giá', tour, 'dollar-sign')
 
         .overview-box__group
-          h2.heading-secondary.ma-bt-lg Your tour guides
+          h2.heading-secondary.ma-bt-lg Các hướng dẫn viên
 
           each guide in tour.guides
             .overview-box__detail
               img.overview-box__img(src=`/img/users/${guide.photo}`, alt=`${guide.name}`)
 
               - if (guide.role === 'lead-guide')
-                span.overview-box__label Lead guide
+                span.overview-box__label Hướng dẫn viên trưởng
               - if (guide.role === 'guide')
-                span.overview-box__label Tour guide
+                span.overview-box__label Hướng dẫn viên
               span.overview-box__text= guide.name
 
     .description-box
-      h2.heading-secondary.ma-bt-lg= `About ${tour.name} tour`
+      h2.heading-secondary.ma-bt-lg= `${tour.name} - Điểm đến lý tưởng cho kỳ nghỉ của bạn`
       - const parapraphs = tour.description.split('\n');
       each p in parapraphs
         p.description__text= p
@@ -70,8 +316,166 @@ block content
       .picture-box
         img.picture-box__img(src=`/img/tours/${img}`, alt=`The Park Camper Tour ${i + 1}`, class=`picture-box__img--${i + 1}`)
 
+  section.section-itineraries     
+    .my-container 
+      h2.heading-secondary.ma-bt-lg.d-flex.justify-content-center.mb-5 Lịch trình
+      .row
+        .col-md-4.d-none.d-md-block.col-12.left
+          .go-tour
+            each itinerarie in tour.itineraries
+              .day.day-001
+                .wrapper
+                  span.date-left  Ngày 
+                  span.date-center= `${itinerarie.day}`
+                  - const date = new Date(tour.startDate)
+                  - date.setTime(date.getTime() + (itinerarie.day - 1) *  24 * 60 * 60 * 1000);
+                  span.date-right
+                    span.date= `${date.toLocaleString('vi', {day: 'numeric', month: 'numeric', year: 'numeric'})}`
+                    span.location= `${itinerarie.address}`
+            //- .day.day-011
+            //-   .wrapper
+            //-     span.date-left  Ngày 
+            //-     span.date-center 2
+            //-     span.date-right
+            //-       span.date 08/08/2024
+            //-       span.location BÃI BIỂN JOMTIEN – KHAO CHEE CHAN        (Ăn sáng, trưa, tối)         
+            //- .day.day-021
+            //-   .wrapper
+            //-     span.date-left  Ngày 
+            //-     span.date-center 3
+            //-     span.date-right
+            //-       span.date 09/08/2024
+            //-       span.location PATTAYA – BANGKOK – CALYPSO CABARET SHOW	(Ăn sáng, trưa, tối) 
+            //- .day.day-031
+            //-   .wrapper
+            //-     span.date-left  Ngày 
+            //-     span.date-center 4
+            //-     span.date-right
+            //-       span.date 10/08/2024
+            //-       span.location CHÙA WAT ARUN - ĐỀN PHẬT VÀNG BỐN MẶT - JODD FAIR	 (Ăn sáng, trưa, tối tự túc)
+            //- .day.day-041
+              .wrapper
+                span.date-left  Ngày 
+                span.date-center 5
+                span.date-right
+                  span.date 11/08/2024
+                  span.location  BANGKOK – HÀ NỘI                                                                          (Ăn sáng, trưa)
+        .col-md-8.col-12.my-right.timeline-section
+          each itinerarie in tour.itineraries
+            div
+              h3#day-00= `Ngày ${itinerarie.day} - ${itinerarie.address}`
+              .excerpt
+                span.my-line
+                div
+                  title
+                  p#tourDescription(style="text-align:justify")!= itinerarie.description
+                  p &nbsp;
+                  grammarly-desktop-integration(data-grammarly-shadow-root="true")
+          //- div
+          //-   h3#day-01 Ngày 2 - BÃI BIỂN JOMTIEN – KHAO CHEE CHAN        (Ăn sáng, trưa, tối)         
+          //-   .excerpt
+          //-     span.my-line
+          //-     div
+          //-       title
+          //-       p(style="text-align:justify") Sau bữa buffet sáng tại khách sạn, đoàn tự do tắm biển tại 
+          //-         strong Bãi biển Jomtien
+          //-         | - địa điểm lý tưởng để tham gia các hoạt động thể thao trên biển. Với bờ cát trắng mịn, làn nước trong xanh và những con sóng lớn, Jomtien mang đến cho du khách những trải nghiệm tuyệt vời trong tour Thái Lan.
+          //-       p(style="text-align:justify")
+          //-         strong - Chợ nổi 4 miền Pattaya
+          //-         | nổi tiếng có đến hơn 115 cửa hàng và quầy bán hàng trên mặt nước. Khu chợ này có một điểm đặc trưng khá thú vị đó là 4 khu vực phân chia rất rõ ràng, đại diện cho 4 miền lớn nhất của Thái Lan.
+          //-       p(style="text-align:justify") Đoàn ăn trưa tại nhà hàng. Sau đó tiếp tục tham quan:
+          //-       p(style="text-align:justify")
+          //-         strong - Trân Bảo Phật Sơn (Khao Chee Chan)
+          //-         | là một ngọn núi với hình tượng Đức Phật được khắc bằng tia laser cao 109 mét, bề ngang 70 mét; phần khắc laser được dát lên 999kg vàng 24 kara với tổng trị giá lên tới 5,2 triệu đô. Rất nhiều du khách đến đây để chiêm ngưỡng và tìm thấy bình an trước hình ảnh Đức Phật.
+          //-       p(style="text-align:justify")
+          //-         strong - Trung tâm triễn lãm Gems Gallery
+          //-         | – nơi trưng bày các tác phẩm nghệ thuật bằng vàng và đá quý có 1 không 2, được bán đấu giá với giá trị rất cao và được tìm hiểu về công nghệ khai thác, chế tác vàng bạc, đá quý của các nghệ nhân.
+          //-       p(style="text-align:justify")
+          //-         strong - Latex Pillow &amp;amp; Mattress
+          //-         | (Nhà máy sản xuất cao su thiên nhiên) tìm hiểu mô hình sản xuất, cũng như trải nghiệm sự êm ái, mềm mại của các sản phẩm được sản xuất từ cao su thiên nhiên. Tại đây, Quý khách có thể mua những sản phẩm được làm từ cao su thiên nhiên của đất nước Thái Lan
+          //-       p(style="text-align:justify")
+          //-         strong - Đồi Vọng Cảnh Khao Phra Tamnak,
+          //-         | nằm trên đồi Pratumnak là địa điểm lý tưởng để ngắm toàn cảnh thành phố Pattaya.
+          //-       p(style="text-align:justify") Quý khách dùng bữa tối tại nhà hàng địa phương và về khách sạn nghỉ ngơi.
+          //-       p(style="text-align:justify") Nghỉ đêm tại khách sạn 4* Pattaya
+          //-       p &nbsp;
+          //-       grammarly-desktop-integration(data-grammarly-shadow-root="true")
+          //- div
+          //-   h3#day-02 Ngày 3 - PATTAYA – BANGKOK – CALYPSO CABARET SHOW	(Ăn sáng, trưa, tối) 
+          //-   .excerpt
+          //-     span.my-line
+          //-     div
+          //-       title
+          //-       p(style="text-align:justify") Quý khách dùng bữa sáng và làm thủ tục trả phòng khách sạn. Xe đưa đoàn về lại Bangkok, trên đường đoàn ghé tham quan:
+          //-       p(style="text-align:justify") - 
+          //-         strong Viện nghiện cứu thảo dược và huyết thanh chiết xuất từ nọc rắn 
+          //-         | và
+          //-         strong Cửa hàng bánh kẹo 
+          //-         | địa phương.
+          //-       p(style="text-align:justify") Đến Bangkok, đoàn dùng bữa trưa tại nhà hàng địa phương và về khách sạn nhận phòng nghỉ ngơi. Buổi chiều, đoàn tham quan:
+          //-       p(style="text-align:justify")
+          //-         strong - Ngắm hoàng hôn và thưởng thức bữa tối trên du thuyền sông Chao Phraya
+          //-         | . Quý khách có thể ngắm nhìn khung cảnh về đêm tuyệt đẹp của Bangkok từ hai bên bờ sông Chao Phraya trong lúc dùng bữa tối.
+          //-       p(style="text-align:justify")
+          //-         strong - Thưởng thức Calypso Cabaret show
+          //-         | - chương trình ca múa nhạc hấp dẫn, với những màn trình diễn lộng lẫy, đầy màu sắc của các diễn viên nam đã chuyển giới đầy tài năng của Bangkok.
+          //-       p(style="text-align:justify") Tự do mua sắm và khám phá 
+          //-         strong Chợ đêm Asiatique
+          //-         | với các gian hàng thời trang, đồ lưu niệm và quầy bán các món ăn đặc sản địa phương hấp dẫn.
+          //-       p(style="text-align:justify") Đoàn về khách sạn nghỉ ngơi
+          //-       p(style="text-align:justify") Nghỉ đêm tại khách sạn 4* Bangkok.
+          //-       p &nbsp;
+          //-       grammarly-desktop-integration(data-grammarly-shadow-root="true")
+          //- div
+          //-   h3#day-03 Ngày 4 - CHÙA WAT ARUN - ĐỀN PHẬT VÀNG BỐN MẶT - JODD FAIR	 (Ăn sáng, trưa, tối tự túc)
+          //-   .excerpt
+          //-     span.my-line
+          //-     div
+          //-       title
+          //-       p(style="text-align:justify") Sau khi dùng bữa sáng tại khách sạn, Quý khách khởi hành tham quan:
+          //-       p(style="text-align:justify")
+          //-         strong - Chùa thuyền Wat Yannawa
+          //-         | - ngôi chùa được xây dựng theo hình dạng một chiếc thuyền và chùa nằm ở phía trên. Sư kết hợp hài hòa giữa kiến trúc hình dáng con thuyền của Trung Hoa với mái cao vút của lối kiến trúc Thái Lan đã tạo nên một tác phẩm tuyệt vời.
+          //-       p(style="text-align:justify")
+          //-         strong - Chùa Wat Arun
+          //-         | – một trong những công trình tiêu biểu và nổi tiếng nhất tại xứ sở chùa Vàng. Kiến trúc của chùa Arun rất độc đáo và ấn tượng, nổi bật nhất là ngôi tháp chính cao 80 mét và bốn ngôi tháp nhỏ ở bốn góc, biểu tượng cho núi Meru, trung tâm của vũ trụ. Các ngôi tháp được trang trí bằng gạch, vôi và hàng nghìn mảnh sành sứ màu sắc, mang lại vẻ đẹp lung linh cho chùa.
+          //-       p(style="text-align:justify") - Tham quan và viếng Phật tại 
+          //-         strong Đền Phật Vàng Bốn Mặt
+          //-         | – điểm linh thiêng mà bất cứ du khách nào cũng không thể bỏ qua khi đến Bangkok.
+          //-       p(style="text-align:justify") Buổi chiều, Quý khách tự do shopping tại kinh đô shopping lớn bậc nhất nước
+          //-         strong  Big C, Central World
+          //-         | . Khám phá
+          //-         strong chợ đêm Jodd Fair 
+          //-         | và
+          //-         strong tự túc ăn tối
+          //-         | với các món đặc sản địa phương.
+          //-       p(style="text-align:justify") Nghỉ đêm khách sạn 4* tại Bangkok
+          //-       p &nbsp;
+          //-       grammarly-desktop-integration(data-grammarly-shadow-root="true")
+          //- div
+            h3#day-04 Ngày 5 -  BANGKOK – HÀ NỘI                                                                          (Ăn sáng, trưa)
+            .excerpt
+              span.my-line
+              div
+                title
+                p(style="text-align:justify") Quý khách dùng bữa sáng tại khách sạn, đoàn trả phòng và tự do đến giờ xe đưa đoàn ra sân bay để làm thủ tục lên máy bay trở về Việt Nam.
+                p(style="text-align:justify") Đến sân bay Nội Bài, kết thúc chương trình và HDV chia tay và hẹn gặp lại Quý khách trong các chương trình tour tiếp theo.
+                p(style="text-align:center") *****
+                p(style="text-align:justify")
+                  u
+                    strong *Lưu ý :
+                p(style="text-align:justify")
+                  em - Thời gian & hành trình có thể thay đổi thứ tự điểm đến tùy vào điều kiện thực tế.
+                p(style="text-align:justify")
+                  em - Bất cứ một hình thức bỏ/ không sử dụng dịch vụ nào tại nước ngoài đều không được hoàn lại tiền vì mọi dịch vụ và bảo hiểm đã được thanh toán trước. Theo chương trình đã ký với đối tác Thái Lan, quý khách sẽ đi theo tour suốt hành trình. Quý khách nào tách đoàn vui lòng báo trước, trả thêm 1.000.000 vnđ/ khách/ điểm tham quan và không được hưởng bất kỳ chế độ bảo hiểm nào
+                p(style="text-align:justify")
+                  em - Nếu có bất cứ chi phí phát sinh nào ngoài chương trình tour, Quý khách vui lòng tự thanh toán.
+                p(style="text-align:justify")
+                  em - Giá tour áp dụng tại thời điểm, báo giá có thể thay đổi tại thời điểm đặt cọc
+
+
   section.section-map
-    #map(data-locations=`${JSON.stringify(tour.locations)}`)
+    #map(data-locations=`${JSON.stringify(tour.itineraries)}`)
 
   section.section-reviews
     .reviews
@@ -85,10 +489,17 @@ block content
       img.cta__img.cta__img--1(src=`/img/tours/${tour.images[1]}`, alt='Tour picture')
       img.cta__img.cta__img--2(src=`/img/tours/${tour.images[2]}`, alt='Tour picture')
       .cta__content
-        h2.heading-secondary What are you waiting for?
-        p.cta__text= `${tour.duration} days. 1 adventure. Infinite memories. Make it yours today!`
+        h2.heading-secondary Bạn còn chờ gì nữa?
+        p.cta__text= `${tour.duration} ngày. 1 chuyến phiêu lưu. Vô vàn kỷ niệm. Đặt ngay hôm nay!`
         
         if user
-          button.btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour.id}`) Book tour now!
+          - if(user.role === 'user')
+            //- button.my-btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour.id}`) Book tour now!
+            //- button.my-btn.btn--green.span-all-rows#book-tourrr(href='/tour/bookingInfor') Book tour now!
+            if booking
+              a.my-btn.btn--green.span-all-rows(href=`/tour/${tour.slug}/my-ticket`) Bạn đã đặt tour này 👉 xem vé ✅
+              //- href to my ticket
+            else
+              a.my-btn.btn--green.span-all-rows.btn-book-tour-now(href=`/tour/${tour.slug}/booking-infor`) Đặt ngay!
         else
-          a.btn.btn--green.span-all-rows(href='/login') Log in to book tour
+          a.my-btn.btn--green.span-all-rows(href=`/login?redirect=/tour/${encodeURIComponent(tour.slug)}`) Đăng nhập để đặt tour

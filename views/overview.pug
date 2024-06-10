@@ -1,45 +1,315 @@
 extends base
 
 block content
+  link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous")
+  link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+  style.
+    .container {
+      display: flex;
+      align-items: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 50px;
+      margin-top: -150px;
+    }
+    .container-2 {
+      display: flex;
+      align-items: center;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-top: 0;
+      gap: 10px
+    }
+    .my-input-group {
+      display: flex;
+      flex-direction: column;
+      margin-right: 20px;
+      zoom: 1.3;
+      margin-left: 30px;
+    }
+    .my-input-group label {
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #2d4271
+    }
+    .input-box {
+      display: flex;
+      align-items: center;
+      border: 2px solid #ffc107;
+      border-radius: 5px;
+      padding: 5px 10px;
+    }
+    .input-box .icon {
+      margin-right: 10px;
+      font-size: 1.2em;
+    }
+    .input-box select,
+    .input-box input {
+      border: none;
+      outline: none;
+      font-size: 1em;
+      padding: 5px;
+      width: 150px;
+      color: #2d4271
+    }
+    .input-box input[type="date"] {
+      width: auto;
+    }
+    .search-button {
+      background-color: #ffa000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 1em;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 2rem;
+      zoom: 1.3;
+      margin-left: 20px;
+      margin-right: 30px;
+      display: flex;
+      align-items: center;
+    }
+    .search-button:hover {
+      background-color: #ff6f00;
+    }
+    .material-icons {
+      margin-top: 3rem;
+      margin-left: 10px;
+    }
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      margin-top: 0;
+      gap: 10px;
+      zoom: 1.2
+    }
+    .btn-toggle {
+      padding: 10px 20px;
+      border: .5px solid #d8d8d8;
+      border-radius: 5px;
+      box-shadow: 0 2px 0 #e2f3ff;
+      background-color: #fff;
+      color: #2d4271;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .btn-toggle:hover,
+    .btn-toggle.active {
+      background-color: #fe9b00;
+    }
+
+    .search-button a {
+      all: unset
+    }
+
+  main
+
+    #carouselExampleAutoplaying.carousel.slide(data-bs-ride="carousel")
+      .carousel-inner
+        .carousel-item.active
+          img.d-block.w-100(src="img/tours/carousel4.png", alt="...")
+        .carousel-item
+          img.d-block.w-100(src="img/tours/carousel2.png", alt="...")
+        .carousel-item
+          img.d-block.w-100(src="img/tours/carousel6.png", alt="...")
+        .carousel-item
+          img.d-block.w-100(src="img/tours/carousel5.png", alt="...")
+        .carousel-item
+          img.d-block.w-100(src="img/tours/carousel.png", alt="...")
+      button.carousel-control-prev(type="button", data-bs-target="#carouselExampleAutoplaying", data-bs-slide="prev")
+        span.carousel-control-prev-icon(aria-hidden="true")
+        span.visually-hidden Previous
+      button.carousel-control-next(type="button", data-bs-target="#carouselExampleAutoplaying", data-bs-slide="next")
+        span.carousel-control-next-icon(aria-hidden="true")
+        span.visually-hidden Next
+
   main.main
-    .card-container
+    .container.d-flex.flex-column
+      .btn-group
+        button.btn-toggle#domesticBtn.active Du lịch trong nước
+        button.btn-toggle#internationalBtn Du lịch nước ngoài
+
+      .container-2
+        .my-input-group
+          label(for="departure") Điểm đi
+          .input-box
+            i.icon
+              svg#i-location(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 32 32", width="16", height="16", fill="none", stroke="currentcolor", stroke-linecap="round", stroke-linejoin="round", stroke-width="2")
+                circle(cx="16", cy="11", r="4")
+                path(d="M24 15 C21 22 16 30 16 30 16 30 11 22 8 15 5 8 10 2 16 2 22 2 27 8 24 15 Z")
+            select#departure
+              option(value='') Nơi khởi hành
+              // Options will be populated by JavaScript
+        span.material-icons
+          | swap_horiz
+        .my-input-group
+          label(for="destination") Điểm đến
+          .input-box
+            i.icon
+              svg#i-location(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 32 32", width="16", height="16", fill="none", stroke="currentcolor", stroke-linecap="round", stroke-linejoin="round", stroke-width="2")
+                circle(cx="16", cy="11", r="4")
+                path(d="M24 15 C21 22 16 30 16 30 16 30 11 22 8 15 5 8 10 2 16 2 22 2 27 8 24 15 Z")
+            select#destination
+              option(value='') Bạn muốn đi đâu?
+              // Options will be populated by JavaScript
+        .my-input-group
+          label(for="startDate") Ngày đi
+          .input-box
+            i.icon
+            - var currentDate = new Date().toISOString().substr(0, 10);
+            input#startDate(type="date", value=currentDate, min=currentDate)
+        button.search-button#searchTourBtn
+          
+          svg#i-search(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 32 32", width="16", height="16", fill="none", stroke="currentcolor", stroke-linecap="round", stroke-linejoin="round", stroke-width="2")
+            circle(cx="14", cy="14", r="12")
+            path(d="M23 23 L30 30")
+          span &nbsp; Tìm kiếm
     
-      each tour in tours
-        .card
-          .card__header
-            .card__picture
-              .card__picture-overlay &nbsp;
-              img.card__picture-img(src=`/img/tours/${tour.imageCover}`, alt=`${tour.name}`)
-            h3.heading-tertirary
-              span= tour.name
+    .my-container.mainContainer
+      .col-xs-12.col-sm-12.col-md-12.col-lg-12.mainContent
+        .col-xs-12.no-padding.v-margin-top-30.v-margin-bottom-30
+          .col-xs-12.no-padding.heading 
+            h2.heading__title Điểm đến yêu thích trong nước
+            p.heading__description Lên rừng xuống biển, trọn vẹn Việt Nam 
+          include partials/domesticDestination
+        //- .col-xs-12.no-padding.v-margin-top-30.v-margin-bottom-30
+          .col-xs-12.no-padding.heading 
+            h2.heading__title Điểm đến yêu thích trong nước
+            p.heading__description Lên rừng xuống biển, trọn vẹn Việt Nam 
+          .col-xs-12.no-padding
+            .grid__container.grid__container--popular.super-cards
+              .grid__item.grid__item--1
+                .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/03/02/10/phuquoc-show.webp');")
+                  a(href="#")
+                    .col-xs-12.card-bg
+                      .info
+                        p.title Phú Quốc
+                //- 
+              .grid__item.grid__item--2
+                .col-xs-12.super-card.card-auto-height(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/03/02/10/vungtau-show.webp');")
+                  a(href="#")
+                    .col-xs-12.card-bg
+                      .info
+                        p.title Vũng Tàu
+              .grid__item.grid__item--3
+                .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2024/05/09/16/da-lat.png');")
+                  a(href="#")
+                    .col-xs-12.card-bg
+                      .info
+                        p.title Đà Lạt
+              .grid__item.grid__item--4
+                .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/03/02/10/quynhon-show.webp');")
+                  a(href="#")
+                    .col-xs-12.card-bg
+                      .info
+                        p.title Quy Nhơn
+              .grid__item.grid__item--5
+                .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/03/02/10/phanthiet-show.webp');")
+                  a(href="#")
+                    .col-xs-12.card-bg
+                      .info
+                        p.title Phan Thiết
+              .grid__item.grid__item--6
+                .col-xs-12.super-card.card-auto-height(style="background-image: url('//cdn1.ivivu.com/iVivu/2024/05/09/16/nha-trang.jpg');")
+                  a(href="#")
+                    .col-xs-12.card-bg
+                      .info
+                        p.title Nha Trang
+              .grid__item.grid__item--7
+                .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2024/05/09/16/da-nang.png');")
+                  - var currentDate = new Date().toISOString().substr(0, 10);
+                  a(href=`/search-tour?type=domestic&destination=Đà+Nẵng&startDate=${currentDate}`)
+                    .col-xs-12.card-bg
+                      .info
+                        p.title Đà Nẵng
+              .grid__item.grid__item--8
+                .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/03/02/10/phuyen-show.webp');")
+                  a(href="#")
+                    .col-xs-12.card-bg
+                      .info
+                        p.title Phú Yên
 
-          .card__details
-            h4.card__sub-heading= `${tour.difficulty} ${tour.duration}-day tour`
-            p.card__text= tour.summary
-            .card__data
-              svg.card__icon
-                use(xlink:href='/img/icons.svg#icon-map-pin')
-              span= tour.startLocation.description
-            .card__data
-              svg.card__icon
-                use(xlink:href='/img/icons.svg#icon-calendar')
-              span= tour.startDates[0].toLocaleString('en-us', {month: 'long', year: 'numeric'})
-            .card__data
-              svg.card__icon
-                use(xlink:href='/img/icons.svg#icon-flag')
-              span= `${tour.locations.length} stops`
-            .card__data
-              svg.card__icon
-                use(xlink:href='/img/icons.svg#icon-user')
-              span= `${tour.maxGroupSize} people`
+        .col-xs-12.no-padding.v-margin-top-30.v-margin-bottom-30
+          .col-xs-12.no-padding.heading 
+            h2.heading__title Điểm đến yêu thích nước ngoài
+            p.heading__description Bao la thế giới. Bốn bể là nhà 
+        include partials/internationalDestination
+        //- .col-xs-12.no-padding.v-margin-top-30.v-margin-bottom-30
+          .col-xs-12.no-padding.heading 
+            h2.heading__title Điểm đến yêu thích nước ngoài
+            p.heading__description Bao la thế giới. Bốn bể là nhà 
+          .col-xs-12.no-padding
+            .grid__container.grid__container--popular-2.super-cards
+              .grid__item.grid__item--1
+                .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/04/17/11/kl-cr.webp');")
+                  a(href="#")
+                    .col-xs-12.card-bg
+                      .info
+                        p.title Kuala Lumpur
+              .grid__item.grid__item--2
+                .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/07/11/18/cruise-terminal-banner-cr.webp');")
+                  a(href="#")
+                    .col-xs-12.card-bg
+                      .info
+                        p.title Singapore
+              .grid__item.grid__item--3
+                .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/11/03/18/us-bangkok-th-header-cr.jpg');")
+                  a(href="#")
+                    .col-xs-12.card-bg
+                      .info
+                        p.title Bangkok
+              .grid__item.grid__item--4
+                .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/07/11/18/photo-1624138784614-87fd1b6528f8-cr.webp');")
+                  a(href="#")
+                    .col-xs-12.card-bg
+                      .info
+                        p.title Sydney
+              .grid__item.grid__item--5
+                .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/02/13/17/maldives-cr.webp');")
+                  a(href="#")
+                    .col-xs-12.card-bg
+                      .info
+                        p.title Maldives
 
-          .card__footer
-            p
-              span.card__footer-value= `$${tour.price}`
-              | 
-              span.card__footer-text per person
-            p.card__ratings
-              span.card__footer-value= tour.ratingsAverage
-              | 
-              span.card__footer-text= `rating (${tour.ratingsQuantity})`
-            a.btn.btn--green.btn--small(href=`/tour/${tour.slug}`) Details
+                        
+  script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous")
+  script.
+    function updateSelectOptions(type) {
+      fetch(`/api/v1/locations/getOptions?type=${type}`)
+        .then(response => response.json())
+        .then(data => {
+          const departureSelect = document.getElementById('departure');
+          const destinationSelect = document.getElementById('destination');
+          departureSelect.innerHTML = '<option value="">Nơi khởi hành</option>';
+          destinationSelect.innerHTML = '<option value="">Bạn muốn đi đâu?</option>';
+
+          data.data.departures.forEach(option => {
+            departureSelect.innerHTML += `<option value="${option.value}">${option.label}</option>`;
+          });
+
+          data.data.destinations.forEach(option => {
+            destinationSelect.innerHTML += `<option value="${option.value}">${option.label}</option>`;
+          });
+        });
+    }
+
+    document.getElementById('domesticBtn').addEventListener('click', function() {
+      updateSelectOptions('domestic');
+      this.classList.add('active');
+      document.getElementById('internationalBtn').classList.remove('active');
+    });
+
+    document.getElementById('internationalBtn').addEventListener('click', function() {
+      updateSelectOptions('international');
+      this.classList.add('active');
+      document.getElementById('domesticBtn').classList.remove('active');
+    });
+
+    // Load domestic options by default
+    updateSelectOptions('domestic');

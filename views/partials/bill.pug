@@ -1,0 +1,45 @@
+- if(objects && objects.length > 0)
+    .container
+      .row
+        each object in objects
+          .col-12.mb-4
+            .card
+              .row.g-0
+                .col-md-4.p-5
+                  img(src=`/img/tours/${object.tour.imageCover}`, class="img-fluid rounded-start tour-image", alt=`${object.tour.name}`)
+                .col-md-5.p-4
+                  .card-body
+                    h4.heading-secondary= `${object.tour.name}`
+                    h4.card__sub-heading.orange_color= `${object.tour.duration} Ngày ${object.tour.duration -1} Đêm`
+                    - const date = object.tour.startDate.toLocaleString('vi', {day: 'numeric', month: 'long', year: 'numeric'})
+                    h3.card__sub-heading.orange_color= `Khởi hành: ${date}`
+                    - if(object.tour.priceDiscount > 0)
+                      span(style='font-size: 17px') Giá tour: 
+                      del.span(style='font-size: 17px') #{object.tour.price.toLocaleString('vi-VN')} ₫
+                      | &nbsp &nbsp
+                      span(style='font-size: 17px; font-weight: bold;') #{(object.tour.price * (1 - object.tour.priceDiscount / 100)).toLocaleString('vi-VN')} ₫
+                      | &nbsp &nbsp  
+                      span(style='font-size: 10px')= `(Giảm ${object.tour.priceDiscount}%)`
+                    - else 
+                      span(style='font-size: 17px') Giá tour: 
+                      span(style='font-size: 17px; font-weight: bold;') #{object.tour.price.toLocaleString('vi-VN')} ₫
+                    br
+                    span(style='font-size: 17px') Số lượng: 
+                    span(style='font-size: 17px; font-weight: bold;')= `${object.quantity}`
+                    //- h3 Số lượng: #{object.quantity}
+                    - const tourBookingDate = object.createdAt.toLocaleString('vi', {day: 'numeric', month: 'long', year: 'numeric'})
+                    br
+                    span(style='font-size: 17px') Ngày đặt: 
+                    span(style='font-size: 17px; font-weight: bold;')= `${tourBookingDate}`
+                    //- h3= `Ngày đặt: ${tourBookingDate}`
+                    .d-flex
+                      span(style='font-size: 17px') Trạng thái Tour:
+                      | &nbsp &nbsp
+                      span(style='font-size: 17px', class=`${object.active ? 'green_color' : 'orange_color'}`)= `${object.active ? 'HIỆN HÀNH' : 'ĐÃ HOÀN THÀNH'}`
+                .col-md-3.d-flex.flex-column.justify-content-center.align-items-center
+                  h3 Tổng thanh toán: 
+                  h3.heading-secondary.red_color= `${(object.tour.price * (1 - object.tour.priceDiscount / 100) * object.quantity).toLocaleString('vi-VN')} ₫`
+                        
+- else 
+    br
+    h1.black_color Không có hoá đơn nào

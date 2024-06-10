@@ -1,7 +1,70 @@
+const multer = require('multer');
+const sharp = require('sharp');
 const Tour = require('./../models/tourModel');
 const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image! Please upload only images.', 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter
+});
+
+exports.uploadTourImages = upload.fields([
+  { name: 'imageCover', maxCount: 1 },
+  { name: 'images', maxCount: 3 }
+]);
+
+
+
+// upload.single('image') req.file
+// upload.array('images', 5) req.files
+
+exports.resizeTourImages = catchAsync(async (req, res, next) => {
+    // console.log('----------', req.body)
+    // console.log('++++++++++', req.files.images)
+ 
+    
+  if (!req.files.imageCover || !req.files.images) return next();
+
+  // 1) Cover image
+  req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+  await sharp(req.files.imageCover[0].buffer)
+    .resize(2000, 1333)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/tours/${req.body.imageCover}`);
+
+  // 2) Images
+  req.body.images = [];
+
+  await Promise.all(
+    req.files.images.map(async (file, i) => {
+      const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+
+      await sharp(file.buffer)
+        .resize(2000, 1333)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/tours/${filename}`);
+
+      req.body.images.push(filename);
+    })
+  );
+
+  next();
+});
+
 
 exports.aliasTours = (req, res, next) => {
     req.query.limit = '5';
@@ -40,31 +103,244 @@ exports.getTour = catchAsync(async (req, res, next) => {
         })
 });
 
+// exports.createTour = catchAsync(async (req, res, next) => {
+//     console.log(req.body)
+//     const newTour = await Tour.create(req.body);
+//         res.status(201).json({
+//             status: 'success',
+//             data: {
+//                 tour: newTour
+//             }
+//         })
+// });
+
 exports.createTour = catchAsync(async (req, res, next) => {
-    const newTour = await Tour.create(req.body);
-        res.status(201).json({
-            status: 'success',
-            data: {
-                tour: newTour
+    // lưu đúng
+    const tourTuTao = {
+        startLocation: {
+          description: "Miami, USA",
+          type: "Point",
+          coordinates: [-80.185942, 25.774772],
+          address: "301 Biscayne Blvd, Miami, FL 33132, USA"
+        },
+        images: ["tour-2-1.jpg", "tour-2-2.jpg", "tour-2-3.jpg"],
+        startDate:  "2024-06-19T09:00:00.000+00:00",
+        name: "hehehehehe",
+        category: "664b5634c81e7e9575e0d182",
+        duration: 7,
+        maxGroupSize: 15,
+        guides: ["5c8a1f292f8fb814b56fa184", "5c8a21f22f8fb814b56fa18a"],
+        price: 497,
+        summary: "Exploring the jaw-dropping US east coast by foot and by boat",
+        description: "Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\nIrure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+        imageCover: "tour-2-cover.jpg",
+        // location
+        itineraries: [
+            {
+                day: 1,
+                address: "địa chỉ ngày 1",
+                coordinates: [
+                    1111111111,
+                    11111111111
+                ],
+                description: "mô tả hoạt động ngày 1"
+            },
+            {
+                day: 2,
+                address: "địa chỉ ngày 2",
+                coordinates: [
+                    2222222,
+                    222222222222
+                ],
+                description: "mô tả hoạt động ngày 2"
             }
-        })
+        ]
+    }
+    const formdata = {  // in ra
+        "name": "test tour",
+        "category": "664b5634c81e7e9575e0d182",
+        "duration": "12",
+        "maxGroupSize": "100",
+        "price": "9999",
+        "priceDiscount": "9",
+        "summary": "ssummmmmmmmmmmmmmmm",
+        "description": "desccccccccccccccccc",
+        "imageCover": {
+            "0": {}
+        },
+        "images": {
+            "0": {},
+            "1": {},
+            "2": {}
+        },
+        "startDate": "2024-06-12",
+        "startLocation": {
+            "coordinates": "12,456",
+            "address": "12 âu cơ",
+            "description": "Đà Nẵng"
+        },
+        "guides": [
+            "5c8a1f292f8fb814b56fa184",
+            "5c8a21d02f8fb814b56fa189"
+        ],
+        "itineraries": [
+            {
+                "day": 1,
+                "address": "địa chỉ ngày 1",
+                "coordinates": [
+                    1111111111,
+                    11111111111
+                ],
+                "description": "dessssssssssssssssssssssssssssssssssssssssss"
+            },
+            {
+                "day": 2,
+                "address": "địa chỉ ngày 2",
+                "coordinates": [
+                    2222222,
+                    222222222222
+                ],
+                "description": "sssssssssssssssssssssssssssssssssssssssss"
+            }
+        ]
+    }
+
+
+    const { name, category, duration, maxGroupSize, price, priceDiscount, summary, description, startDate, startLocation, guides, itineraries, imageCover, images, locations} = req.body;
+    // Parse JSON strings back to objects
+    const parsedStartLocation = JSON.parse(startLocation);
+    const parsedGuides = JSON.parse(guides);
+    const parsedItineraries = JSON.parse(itineraries)
+    const newTour = {
+        name, category, duration, maxGroupSize, price, priceDiscount, summary, description, startDate,
+        startLocation: {
+            type: 'Point',
+            coordinates: parsedStartLocation.coordinates.split(',').map(Number),
+            address: parsedStartLocation.address,
+            description: parsedStartLocation.description
+        },
+        startDate: new Date(startDate),
+        guides: parsedGuides,
+        itineraries: parsedItineraries.map(itinerary => ({
+            type: 'Point',
+            coordinates: itinerary.coordinates.split(',').map(Number),
+            address: itinerary.address,
+            description: itinerary.description,
+            day: itinerary.day
+        })),
+        imageCover,
+        images,
+        locations     
+    }
+
+    // console.log(newTour)
+    console.log(JSON.stringify(newTour, null, 2));
+    
+
+    // body
+    const body = {
+        name: 'test tour',
+        category: '664b5634c81e7e9575e0d182',
+        duration: '12',
+        maxGroupSize: '11',
+        price: '9999',
+        priceDiscount: '11',
+        summary: '111111111111',
+        description: '11111111111111',
+        startDate: '2024-06-11',
+        startLocation: '{"coordinates":"12,456","address":"12 âu cơ","description":"Bắc Giang"}',
+        guides: '["5c8a1f292f8fb814b56fa184"]',
+        itineraries: '[{"day":1,"address":"địa chỉ ngày 1","coordinates":[1111111111,11111111111],"description":"      222222222222222222222"}]',
+        imageCover: 'tour-undefined-1717836386342-cover.jpeg',
+        images: [
+          'tour-undefined-1717836386548-1.jpeg',
+          'tour-undefined-1717836386549-2.jpeg',
+          'tour-undefined-1717836386549-3.jpeg'
+        ]
+      }
+  
+      await Tour.create(newTour);
+  
+      res.status(201).json({
+        status: 'success',
+        data: {
+          tour: newTour
+        }
+      });
 });
 
+
+
+
+
+
+// exports.updateTour = catchAsync(async (req, res, next) => {
+//     const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+//         new: true,
+//         runValidators: true
+//     });
+
+//     if(!tour) {
+//         return next(new AppError('No tour found with that ID', 404));     // to global err handler
+//     }
+//     // await Tour.createVersion(tour.id);
+//     tour.save(function(err) {
+//         if (err) return handleError(err);
+//         console.log('Version saved');
+//     });
+
+//     res.status(200).json({
+//         status: 'success',
+//         data: {
+//             tour
+//         }
+//     })
+// });
+// exports.updateTour = catchAsync(async (req, res, next) => {
+//     const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+//         new: true,
+//         runValidators: true
+//     });
+
+//     if (!tour) {
+//         return next(new AppError('No tour found with that ID', 404)); // to global err handler
+//     }
+
+//     try {
+//         await tour.save();
+//         console.log('Version saved');
+//     } catch (err) {
+//         console.error(err);
+//         return next(new AppError('Error saving version', 500)); // to global err handler
+//     }
+
+//     res.status(200).json({
+//         status: 'success',
+//         data: {
+//             tour
+//         }
+//     });
+// });
 exports.updateTour = catchAsync(async (req, res, next) => {
-    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-        runValidators: true
-    });
-    if(!tour) {
-        return next(new AppError('No tour found with that ID', 404));     // to global err handler
+    const tour = await Tour.findById(req.params.id);
+
+    if (!tour) {
+        return next(new AppError('No tour found with that ID', 404)); // to global err handler
     }
+
+    tour.set(req.body);
+    await tour.save();
+
     res.status(200).json({
         status: 'success',
         data: {
             tour
         }
-    })
+    });
 });
+
+
+
 
 exports.deleteTour = catchAsync(async (req, res, next) => {
     const tour = await Tour.findByIdAndDelete(req.params.id);

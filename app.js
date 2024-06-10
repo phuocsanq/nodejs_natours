@@ -9,6 +9,9 @@ const rateLimit = require('express-rate-limit');
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+const pug = require('pug');
+
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
@@ -16,6 +19,9 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const viewRouter = require('./routes/viewRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
+const categoryRouter = require('./routes/categoryRoutes');
+const locationRouter = require('./routes/locationRoutes');
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -84,6 +90,8 @@ app.use('/api', limiter); // Apply the rate limiting middleware to API calls onl
 // Body parser, reading data from body into req.body
 app.use(express.json());
 
+app.use(cookieParser());
+
 // data sanitizaton against NoSQL query Injection
 app.use(mongoSanitize());
 
@@ -102,9 +110,14 @@ app.use((req, res, next) => {
 })
 app.use((req, res, next) => {                           
     req.requestTime = new Date().toISOString();
-    // console.log(req.headers);
+    // console.log(req.cookies);
     next();
 })
+// Sử dụng middleware để thiết lập các biến cục bộ cho các mẫu
+app.use((req, res, next) => {
+    res.locals.pug = pug;
+    next();
+});
 
 
 // ROUTES
@@ -113,6 +126,9 @@ app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
+app.use('/api/v1/categories', categoryRouter);
+app.use('/api/v1/locations', locationRouter);
 
 app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));

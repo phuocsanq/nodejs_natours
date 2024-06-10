@@ -1,0 +1,162 @@
+//- partials/userTable.pug
+
+table.table
+  thead
+    tr
+      th(scope="col") #
+      th(scope="col") Tên
+      th(scope="col")
+      th(scope="col") Email
+      th(scope="col") Booking
+      th(scope="col") Ngày kích hoạt
+      th(scope="col") 
+  tbody
+    each user, index in users
+      tr
+        td(scope="row")= (pagination.currentPage - 1) * pagination.rowsPerPage + index + 1
+        td= `${user.name}`
+        td 
+          img(style="border-radius: 50%; height: 18px" ,src=`/img/users/${user.photo}`)
+        td= `${user.email}`
+        - if(user.bookings.length > 0)
+          td(style='color: #00d200')= `${user.bookings.length}`
+        - else
+          td= `${user.bookings.length}`
+        td= `${user.createdAt.toLocaleString('vi', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'})}`
+        td.d-flex.gap-1
+          button.btn.btn-outline-info(type="button", data-bs-toggle="modal", data-bs-target="#exampleModalChangeUserInfor", data-user=user)
+            svg#i-eye(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 30 30", width="14", height="14", fill="none", stroke="currentcolor", stroke-linecap="round", stroke-linejoin="round", stroke-width="2")
+              circle(cx="17", cy="15", r="1")
+              circle(cx="16", cy="16", r="6")
+              path(d="M2 16 C2 16 7 6 16 6 25 6 30 16 30 16 30 16 25 26 16 26 7 26 2 16 2 16 Z")
+          button.btn.btn-outline-danger(type="button", data-bs-toggle="modal", data-bs-target="#exampleModalDeleteUser", data-user=user)
+            svg#i-trash(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 30 30", width="14", height="14", fill="none", stroke="currentcolor", stroke-linecap="round", stroke-linejoin="round", stroke-width="2")
+              path(d="M28 6 L6 6 8 30 24 30 26 6 4 6 M16 12 L16 24 M21 12 L20 24 M11 12 L12 24 M12 6 L13 2 19 2 20 6")
+
+
+script.
+  document.addEventListener('DOMContentLoaded', (event) => {
+    $(document).on('show.bs.modal', event => {
+      if(event.target.id === 'exampleModalChangeUserInfor') {
+        const exampleModal = document.getElementById('exampleModalChangeUserInfor')
+        const button = event.relatedTarget
+        const user = JSON.parse(button.getAttribute('data-user'))
+        //- console.log(user.name)
+        
+        const staticAvatar = exampleModal.querySelector('.modal-body img#staticAvatar')
+        const staticId = exampleModal.querySelector('.modal-body input#staticId')
+        const staticEmail = exampleModal.querySelector('.modal-body input#staticEmail')
+        const staticName = exampleModal.querySelector('.modal-body input#staticName')
+        const staticNumTour = exampleModal.querySelector('.modal-body input#staticNumTour')
+        const staticRegdate = exampleModal.querySelector('.modal-body input#staticRegdate')
+
+        // Update the modal's content
+        const modalTitle = exampleModal.querySelector('.modal-title')
+        //- const modalBodyInput = exampleModal.querySelector('.modal-body span#modalUserName')
+
+        modalTitle.textContent = `THÔNG TIN NGƯỜI DÙNG`
+
+        staticAvatar.src= `/img/users/${user.photo}`
+        staticId.value = `${user._id}`
+        staticEmail.value = `${user.email}`
+        staticName.value = `${user.name}`
+        staticNumTour.value = `${user.bookings.length}`
+        console.log(new Date(user.createdAt).toLocaleString('vi', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'}))
+        staticRegdate.value = `${new Date(user.createdAt).toLocaleString('vi', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'})}`
+        //- modalBodyInput.textContent = `Name: ${name}, Email: ${email}, Role: ${role}, Registered Date: ${regdate}`
+      
+        const seeToursLink = exampleModal.querySelector('.modal-body a');
+        if (user.bookings.length > 0) {
+          seeToursLink.style.display = 'block'; // Show link if bookings exist
+          console.log('show');
+        } else {
+          seeToursLink.style.display = 'none'; // Hide link if no bookings
+          console.log('hide');
+        }
+
+        // Xóa trình xử lý sự kiện trước đó để tránh tìm nạp nhiều lần
+        $('#collapseExample').off('show.bs.collapse');
+        $('#collapseExample').on('show.bs.collapse', function() {
+          const tourList = exampleModal.querySelector('.modal-body ul.showBookedTour.list-group');
+          tourList.innerHTML = ''; // Clear existing content
+
+          // Fetch booking data for the user
+          const userId = user._id; // Assuming user ID is stored in '_id' property
+          fetch('/api/v1/bookings/' + userId + '/bookings')
+            .then(response => response.json())
+            .then(tours => {
+              tours.tours.forEach(tour => {
+                const tourItem = document.createElement('li');
+                tourItem.classList.add('list-group-item');
+
+                const bookingLink = document.createElement('a');
+                bookingLink.href = `/tour/${tour.slug}`;
+                bookingLink.target = "_blank";
+                bookingLink.style = "text-decoration: none; color: #56b250;";
+                bookingLink.textContent = tour.name;
+                tourItem.appendChild(bookingLink);
+
+                tourList.appendChild(tourItem);
+              });
+            });
+
+          // Access tour data from user object (assuming 'bookings' array holds tour information)
+          //- user.bookings.forEach(tour => {
+          //-   const tourItem = document.createElement('li');
+          //-   tourItem.classList.add('list-group-item');
+          //-   tourItem.textContent = tour.tourVersion.versions[tour.version]; // Access tour name property from 'tour' object
+          //-   tourList.appendChild(tourItem);
+          //- });
+        });
+      
+      }
+
+      if(event.target.id === 'exampleModalDeleteUser') {
+        const exampleModal = document.getElementById('exampleModalDeleteUser')
+        // Button that triggered the modal
+        const button = event.relatedTarget
+        // Extract info from data-* attributes
+        const user = JSON.parse(button.getAttribute('data-user'))
+        console.log(user.name)
+        
+        const staticDeleteAvatar = exampleModal.querySelector('.modal-body img#staticDeleteAvatar')
+        const staticDeleteId = exampleModal.querySelector('.modal-body input#staticDeleteId')
+        const staticDeleteEmail = exampleModal.querySelector('.modal-body input#staticDeleteEmail')
+        const staticDeleteName = exampleModal.querySelector('.modal-body input#staticDeleteName')
+        //- const staticDeleteRole = exampleModal.querySelector('.modal-body input#staticDeleteRole')
+        const staticDeleteRegdate = exampleModal.querySelector('.modal-body input#staticDeleteRegdate')
+
+        // Update the modal's content
+  
+        staticDeleteAvatar.src= `/img/users/${user.photo}`
+        staticDeleteId.value = `${user._id}`
+        staticDeleteEmail.value = `${user.email}`
+        staticDeleteName.value = `${user.name}`
+        //- staticDeleteRole.value = `${user.role}`
+        staticDeleteRegdate.value = `${new Date(user.createdAt).toLocaleString('vi', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'})}`
+      
+        const btnDeleteUser = exampleModal.querySelector('button#deleteUser');
+        const spanDeleteUser = exampleModal.querySelector('span#deleteUser');
+        if (user.bookings.length > 0) {
+          btnDeleteUser.style.display = 'none'; 
+          spanDeleteUser.style.display = 'block'; 
+        } else {
+          btnDeleteUser.style.display = 'block'; 
+          spanDeleteUser.style.display = 'none';
+        }
+      
+      }
+    });
+
+    $(document).on('hidden.bs.modal', event => {
+      if(event.target.id === 'exampleModalChangeUserInfor') {
+        if($('#collapseExample').hasClass('show')) {
+          $('#collapseExample').collapse('hide');
+        }
+      }
+    });
+
+  })
+
+
+

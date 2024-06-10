@@ -6,37 +6,44 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        require: [true, 'Please tell us your name']
+        require: [true, 'Vui lòng cung cấp tên của bạn']
     },
     email: {
         type: String,
-        require: [true, 'Please provide your email'],
+        require: [true, 'Vui lòng cung cấp email'],
         unique: true,
         lowercase: true,
-        validate: [validator.isEmail, 'Please provide a valid email']
+        validate: [validator.isEmail, 'Vui lòng cung cấp email hợp lệ']
     },
-    photo: String,
+    photo: {
+        type: String,
+        default: 'default.jpg'
+    },
     role: {
         type: String,
-        enum: ['user', 'guide', 'lead-guide', 'admin'],
+        enum: ['user', 'guide', 'admin'],
         default: 'user'
     },
     password: {
         type: String,
-        require: [true, 'Please provide your password'],
+        require: [true, 'Vui lòng cung cấp mật khẩu'],
         minlength: 8,
         select: false
     },
     passwordConfirm: {
         type: String,
-        require: [true, 'Please confirm your password'],
+        require: [true, 'Vui lòng cung cấp mật khẩu'],
         validate: {
             // this only works on CREATE and SAVE
             validator: function(vl) {
                 return vl === this.password;
             },
-            message: 'Password are not the same'
+            message: 'Xác nhận mật khẩu không đúng.'
         }
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now()
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
@@ -63,6 +70,7 @@ userSchema.pre('save', async function(next) {
     this.passwordConfirm = undefined;
 });
 
+////
 userSchema.pre(/^find/, function(next) {
     this.find({ active: { $ne: false }});
     next();

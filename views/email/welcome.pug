@@ -1,0 +1,17 @@
+extends baseEmail
+
+block content
+  p Chào #{firstName},
+  p Lời chào mừng nồng nhiệt đến với BOOkingTours! 🎉🙏
+  p Chúng tôi rất háo hức được cùng bạn khám phá những hành trình mới. BOOkingTours luôn coi trọng mỗi du khách như một thành viên trong gia đình. Để chúng tôi có thể hiểu bạn hơn, hãy chia sẻ ảnh đại diện của bạn nhé!
+  table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+    tbody
+      tr
+        td(align='left')
+          table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+            tbody
+              tr
+                td
+                  a(href=`${url}`, target='_blank') Tải ảnh đại diện
+  p Hãy liên hệ với chúng tôi nếu bạn cần bất kỳ sự trợ giúp nào! Chúc bạn có những trải nghiệm du lịch tuyệt vời và đáng nhớ cùng BOOkingTours!
+  p - Phan Phuoc Sang, CEO

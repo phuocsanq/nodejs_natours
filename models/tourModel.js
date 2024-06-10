@@ -1,19 +1,25 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const version = require('mongoose-version');
+const { strategy } = require('sharp');
 
 const tourSchema = new mongoose.Schema({
     name: {
         type: String,
         require: [true, 'A tour must have a name'],
-        unique: true,
         trim: true,
-        minlength: [10, 'A tour name must have more or equal 10 characters'],
+        minlength: [7, 'A tour name must have more or equal 7 characters'],
         maxlength: [40, 'A tour name must have less or equal 40 characters']
     },
+    category: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Category',
+        required: [true, 'A tour must belong to a category']
+    },
     slug : String,
-    secretTour: {
+    active: {
         type: Boolean,
-        default: false
+        default: true
     },
     duration: {
         type: Number,
@@ -23,12 +29,14 @@ const tourSchema = new mongoose.Schema({
         type: Number,
         require: [true, 'A tour must have a group size']
     },
-    difficulty: {
-        type: String,
-        require: [true, 'A tour must have a difficulty'],
-        enum: {
-            values: ['easy', 'medium', 'difficult'],
-            message: 'Difficulty either: easy, medium, difficult'
+    currentGroupSize: {
+        type: Number,
+        default: 0,
+        validate: {
+            validator: function(val) {
+                return val <= this.maxGroupSize;
+            },
+            message: 'Current group size ({VALUE}) should be below or equal to max group size'
         }
     },
     ratingsAverage: {
@@ -48,11 +56,12 @@ const tourSchema = new mongoose.Schema({
     },
     priceDiscount: {
         type: Number,
+        default: 0,
         validate: {
             validator: function(val) {
-                return val < this.price;
+                return val < 100;
             },
-            message: 'Discount price ({VALUE}) should be below regular price'
+            message: 'Discount rate ({VALUE}) should be below 100%'
         }
     },
     summary: {
@@ -74,7 +83,7 @@ const tourSchema = new mongoose.Schema({
         default: Date.now(),
         select: false
     },
-    startDates: [Date],
+    startDate: Date,
     startLocation: {
         type: {
             type: String,
@@ -86,6 +95,13 @@ const tourSchema = new mongoose.Schema({
         description: String
     },
     locations: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Location',
+            required: [true, 'A tour must have at least one location']
+        }
+    ],
+    itineraries: [
         {
         type: {
             type: String,
@@ -116,18 +132,27 @@ tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
 tourSchema.index({ startLocation: '2dsphere'});
 
-// virtual populate
+
+// virtual populate - not save to DB
 tourSchema.virtual('reviews', {
     ref: 'Review',
-    foreignField: 'tour',
+    foreignField: 'tour',       // 'tour' field in reviewModel - where reference to here
     localField: '_id'
 })
 
 // DOCUMENTS MIDDLEWARE: runs before .save() and .create()
+// tourSchema.pre('save', function(next) {
+//     this.slug = slugify(this.name, {lower: true});
+//     next();
+// })
+// tourSchema.pre('save', function(next) {
+//     this.slug = this._id.toString();
+//     next();
+// });
 tourSchema.pre('save', function(next) {
-    this.slug = slugify(this.name, {lower: true});
+    this.slug = slugify(this.name, { lower: true }) + '-' + this._id;
     next();
-})
+});
 // tourSchema.pre('save', function(next) {
 //     console.log('Will save the document');
 //     next();
@@ -138,10 +163,10 @@ tourSchema.pre('save', function(next) {
 //     next();
 // })
 // QUERY MIDDLEWARE
-tourSchema.pre(/^find/, function(next) {
-    this.find({ secretTour: { $ne: true }});
-    next();
-});
+// tourSchema.pre(/^find/, function(next) {
+//     this.find({ secretTour: { $ne: true }});
+//     next();
+// });
 
 tourSchema.pre(/^find/, function(next) {
     this.populate({
@@ -157,6 +182,20 @@ tourSchema.pre(/^find/, function(next) {
 //     next();
 // })
 
+tourSchema.methods.updateCurrentGroupSize = async function(quantity) {
+    // this: current Model
+    this.currentGroupSize += quantity * 1;
+    return this.save();
+};
+
+// tourSchema.plugin(version, { collection: 'tour_versions', strategy: 'collection' });  khong dung
+tourSchema.plugin(version, { 
+    collection: 'tour_versions', 
+    suppressRefIdIndex: 'false', 
+    suppressVersionIncrement: 'false',
+    ignorePaths: ['currentGroupSize']
+}); 
+// tourSchema.plugin(version, { collection: 'tour_versions' }); giong nhu tren
 const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;

@@ -1,0 +1,12 @@
+extends base
+
+block content
+  main.main
+    .request-reset-email-form
+      h2.heading-secondary.ma-bt-lg Đặt lại mật khẩu tài khoản
+      form.form.form--request-reset-email
+        .form__group
+          label.form__label.lable-request-email(for='email') Vui lòng nhập email của bạn và nhấp vào "Gửi liên kết qua Email" để nhận email chứa đường dẫn đặt lại mật khẩu cho tài khoản này.
+          input#email.form__input(type='email', placeholder='you@example.com', required)
+        .form__group
+          button.my-btn.btn--green Gửi liên kết qua Email

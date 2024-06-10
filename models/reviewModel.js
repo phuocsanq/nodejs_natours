@@ -24,6 +24,13 @@ const reviewSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now()
+        // default: () => {
+        //     // Lấy thời gian hiện tại
+        //     const now = new Date();
+        //     // Lấy múi giờ hiện tại và cộng thêm chênh lệch múi giờ
+        //     const localTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+        //     return localTime;
+        // }
     }
 },
 {
@@ -31,7 +38,7 @@ const reviewSchema = new mongoose.Schema({
     toObject: {virtuals: true}
 });
 
-reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });  // Each user can only rate a maximum of 1 time per tour
 
 reviewSchema.statics.calcRatingsAverage = async function(tourId) {
     const stats = await this.aggregate([             // this: current Model
@@ -74,13 +81,23 @@ reviewSchema.pre(/^findOneAnd/, async function(next) {
     // next();
 
     this.r = await this.model.findOne(this.getQuery()); //  getQuery() Returns the query condition that has been set in the current query.
-    // console.log(this.getQuery());
+    // console.log('THIS', this.getQuery());
+    // console.log('THIS', this);
     next();
 });
+// this là query
+// this.getQuery()  - { _id: '5c8a34ed14eb5c17645c9108' }    _id là id của document review
+// mục tiêu là truy cập dc vào doc hiện tại, nhưng this lúc này là query hiện tại
+// this.findOne() -> doc hiện tại
+// this.r         -> doc hiện tại
+
 
 reviewSchema.post(/^findOneAnd/, async function(doc) {
-    await this.model.calcRatingsAverage(this.r.tour); 
+    await this.model.calcRatingsAverage(this.r.tour);   // this là query
+    // await this.r.constructor.calcRatingsAverage(this.r.tour);   
 });
+// dùng post thì nếu calcRatingsAverage trong pre thì lúc này không truy cập vào query hiện tại dc nữa, vì query đã chạy xong
+
 
 reviewSchema.pre(/^find/, function(next) {
     // this.populate({

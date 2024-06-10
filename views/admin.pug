@@ -1,0 +1,22 @@
+extends base
+
+mixin navItem(link, text, icon, currentPath)
+  - const active = currentPath == link;
+  li(class=`${active ? 'side-nav--active' : ''}`)
+    a(href=`${link}`)
+      svg
+        use(xlink:href=`/img/icons.svg#icon-${icon}`)
+      | #{text}
+
+block content
+  main.main_admin
+    .admin-view
+      nav.admin-view__menu
+        ul.side-nav
+          +navItem('/admin/tour', 'Tours', 'map', currentPath)
+          +navItem('/admin/user', 'Users', 'users', currentPath)
+          +navItem('/admin/guide', 'Guides', 'flag', currentPath)
+          +navItem('#', 'Reviews', 'star', currentPath)
+          +navItem('#', 'Bookings', 'briefcase', currentPath)
+      .admin-view__content
+        block content_admin

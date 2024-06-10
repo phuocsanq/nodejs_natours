@@ -1,0 +1,69 @@
+extends baseEmail
+
+block content
+  p Chào #{firstName},
+  p BOOkingTours hân hạnh được chào đón bạn! Chúng tôi rất vui mừng được đồng hành cùng bạn trong chuyến du lịch sắp tới 🎉🙏
+  p Tại BOOkingTours, chúng tôi luôn coi trọng trải nghiệm của du khách và mong muốn mang đến cho bạn dịch vụ tốt nhất. Cảm ơn bạn đã tin tưởng và lựa chọn dịch vụ của chúng tôi.
+  table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+    tbody
+      tr
+        td Chi tiết đặt tour của bạn:
+      tr
+        td Tour:
+        td 
+          strong #{tourName}
+      tr
+        td Khởi hành:
+        td 
+          strong= `${startDate.toLocaleString('vi', {day: 'numeric', month: 'long', year: 'numeric'})}`
+      tr
+        td Thời lượng tour:
+        td 
+          strong #{duration} ngày #{duration - 1} đêm
+      
+      - if(priceDiscount > 0)
+        tr
+          td Giá vé:
+          td 
+            del= `${price.toLocaleString('vi-VN')} ₫`
+            | &nbsp;&nbsp;
+            strong= `${(price * (1 - priceDiscount / 100)).toLocaleString('vi-VN')} ₫`
+            | &nbsp;&nbsp;
+            span= `(Giảm ${priceDiscount}%)`
+      - else 
+        tr
+          td Giá vé:
+          td 
+            strong= `${price.toLocaleString('vi-VN')} ₫`
+
+      tr
+        td Số lượng:
+        td 
+          strong #{quantity}
+      tr
+        td Tổng thanh toán:
+        td 
+          strong= `${((price * (1 - priceDiscount / 100)) * quantity).toLocaleString('vi-VN')} ₫`
+      tr
+        td Ngày đặt tour:
+        td 
+          strong= `${bookingDate.toLocaleString('vi', {day: 'numeric', month: 'long', year: 'numeric'})}`
+    br
+    p(align='center') Mã QR vé của bạn (quét mã QR tại quầy để kiểm tra vé)
+    div(style='text-align: center;')
+      //- img.mycard__picture-img_ticket(src=qrCodeDataURL)
+      img(src=`https://api.qrserver.com/v1/create-qr-code/?data=${qrCode}&amp;size=80x80` alt='' title='')
+    br
+  table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+    tbody
+      tr
+        td(align='left')
+          table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+            tbody
+              tr
+                td
+                  a(href=`${url}`, target='_blank') Vé của bạn trên BOOKingtours website
+  br
+  br
+  p Nếu bạn có bất kỳ thắc mắc nào hoặc cần hỗ trợ, vui lòng liên hệ với chúng tôi.
+  p - Phan Phuoc Sang, CEO

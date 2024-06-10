@@ -1,0 +1,40 @@
+extends base
+
+block content
+  main.main
+    .booking-infor-form
+        h1.heading-secondary.ma-bt-lg Đặt tour du lịch
+        .grid-container-1row-2col.margin_top_30
+            .grid-item
+                img.mycard__picture-img(src=`/img/tours/${tour.imageCover}`, alt=`${tour.name}`)
+                h4.heading-secondary= `${tour.name}`
+                h4.card__sub-heading.orange_color= `${tour.duration} Ngày ${tour.duration - 1} Đêm`
+                h4.card__sub-heading.black_color= `Khởi hành: ${tour.startDate.toLocaleString('vi', {day: 'numeric', month: 'long', year: 'numeric'})}`
+                - if(tour.priceDiscount > 0)
+                    del.h5.heading-secondary.black_color.margin_top_5= `${tour.price.toLocaleString('vi-VN')} ₫` 
+                    span.black_color= ` (Giảm ${tour.priceDiscount}%)` 
+                    br
+                    h5.heading-secondary.margin_top_5.red_color= `${(tour.price * (1 - tour.priceDiscount / 100)).toLocaleString('vi-VN')} ₫`
+                - else 
+                    h5.heading-secondary.red_color.margin_top_5= `${tour.price.toLocaleString('vi-VN')} ₫`
+            .grid-item
+                //- input#quantity(type="number", name="quantity", min="1", max="5")
+                if tour.maxGroupSize - tour.currentGroupSize !== 0
+                    label.margin_top_40.heading-secondary Số lượng
+                    .count_container
+                        button#decrement - 
+                        input#my-input(type="number", min="1", max=`${tour.maxGroupSize - tour.currentGroupSize}`, value="1", readonly)
+                        button#increment + 
+                    br
+                    br
+                    //- a.btn.btn--green.span-all-rows(href='#') Book tour now!
+                    button.my-btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour.id}`) Đặt ngay!
+                else
+                    label.margin_top_40.heading-secondary.red_color Rất tiếc, tour này đã hết chỗ
+                    br
+                    br
+                    label.heading-secondary.black_color Chúng tôi xin lỗi vì không thể đáp ứng nhu cầu của quý khách trong thời điểm hiện tại. Vui lòng tham khảo các tour khác hoặc đăng ký tham gia tour này vào đợt tiếp theo.
+                    h1 😫😣
+                
+
+  

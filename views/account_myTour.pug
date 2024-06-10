@@ -1,0 +1,37 @@
+extends account
+
+block content_account
+  script(src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous")
+  main.main_account
+    h1.heading-secondary.ma-bt-lg Các tour đang đặt
+    #userTable
+      include partials/mytour
+    - if(tours && tours.length > 0)
+      #paginationWrapper
+        include partials/pagination
+
+  script.
+    $(document).ready(function() {
+      function updateTableAndPagination(page, rowsPerPage) {
+        $.get('/my-tours', { page: page, rowsPerPage: rowsPerPage }, function(data) {
+          $('#userTable').html(data.userTableHtml);
+          $('#paginationWrapper').html(data.paginationHtml);
+        });
+      }
+      
+      $(document).on('click', '.page-link', function(e) {
+        e.preventDefault();
+        const page = $(this).data('page');
+        const rowsPerPage = 3;
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth' 
+        });
+        updateTableAndPagination(page, rowsPerPage);
+      });
+
+      //- $('.rowsPerPage').on('change', function() {
+      //-   const rowsPerPage = $(this).val();
+      //-   updateTableAndPagination(1, rowsPerPage); 
+      //- });
+    });

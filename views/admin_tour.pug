@@ -1,0 +1,880 @@
+extends admin
+
+block content_admin
+  link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous")
+  script(src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous")
+  script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous")
+
+  style.
+    #itineraries-container {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    #guides-container,
+    #locations-container {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+  .admin-screen
+    nav.navbar
+      .container-fluid.mt-5
+        .d-flex.gap-5
+          form.d-flex(role="search")
+            input#searchTour.form-control.me-2(style='font-size: 12px', type="search", placeholder="Tìm kiếm ...", aria-label="Search")
+          button#addTour.btn.btn-success(type="button", data-bs-toggle="modal", data-bs-target="#exampleModalAddTour", data-user=user) Thêm Tour
+
+    .d-flex.flex-column.align-items-start.mt-4
+      .div
+        select.rowsPerTourPage.form-select(aria-label="Default select example")
+          option(value="5") 5
+          option(selected, value="10") 10
+          option(value="20") 20
+          option(value="50") 50
+          option(value="100") 100
+
+    #tourTable
+      include partials/tourTable
+
+    #paginationWrapper
+      include partials/pagination
+
+    // Modal add tour
+    #exampleModalAddTour.modal.fade.modal-xl(data-bs-backdrop="static", tabindex="-1", aria-labelledby="exampleModalLabel", aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header.d-flex.justify-content-center
+            h1#exampleModalLabel.modal-title.fs-5(style='color: #28b487') THÊM TOUR MỚI
+            button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
+          .modal-body.mt-3.mb-3
+            form.form--add-tour.row.needs-validation(novalidate)
+              .row.p-3
+                .col-sm-4
+                  .mb-3.row
+                    label.col-sm-3.col-form-label Tên tour
+                    .col-sm-9
+                      input#tourName.form-control(style='font-size: 12px', type="text", value="", required)
+                  .mb-3.row
+                    label.col-sm-3.col-form-label(for="staticRole") Danh mục
+                    .col-sm-9
+                      select#categorySelect.form-select(style='font-size: 12px', aria-label="Default select example")
+                      //
+                  .mb-3.row
+                    label.col-sm-7.col-form-label Ngày khởi hành
+                    .col-sm-5
+                      input#tourStartDate.form-control(style='font-size: 12px', type="datetime-local", value="", required)
+                  .mb-3.row
+                    label.col-sm-7.col-form-label Thời lượng (ngày)
+                    .col-sm-5
+                      input#tourDuration.form-control(style='font-size: 12px', type="text", value="", required)
+                  .mb-3.row
+                    label.col-sm-7.col-form-label Số người tối đa
+                    .col-sm-5
+                      input#maxGroupSize.form-control(style='font-size: 12px', type="text", value="", required)
+                  .mb-3.row
+                    label.col-sm-7.col-form-label Giá (₫)
+                    .col-sm-5
+                      input#tourPrice.form-control(style='font-size: 12px', type="text", value="", required)
+                  .mb-3.row
+                    label.col-sm-7.col-form-label Giảm giá (%)
+                    .col-sm-5
+                      input#tourPriceDiscount.form-control(style='font-size: 12px', type="text", value="", required)
+                  .mb-3.row
+                    label.col-sm-4.col-form-label Ảnh bìa (1)
+                    .col-sm-8
+                      input#tourCoverImg.form-control(style='font-size: 12px', type="file", value="", accept="image/*", required)
+                  .mb-3.row
+                    label.col-sm-4.col-form-label Ảnh khác (3)
+                    .col-sm-8
+                      input#tourImg.form-control(style='font-size: 12px', type="file", value="", accept="image/*", multiple, required)
+                  .mb-3.row
+                    label.col-sm-2.col-form-label Tóm tắt
+                    .col-sm-10
+                      textarea#tourSummary(style='width: 100%; font-size: 10px', required, placeholder=' Khoảng 30 kí tự')
+                  .mb-3.row
+                    label.col-sm-2.col-form-label Mô tả
+                    .col-sm-10
+                      textarea#tourDescription(style='width: 100%; height: 100px; font-size: 10px', required, placeholder=' Khoảng 30 kí tự')
+                .col-sm-3
+                  .mb-3.row
+                    label.col-sm-7.col-form-label(for="staticRole") Tỉnh thành nơi khởi hành
+                    .col-sm-5
+                      select#tourStartProvince.form-select(style='font-size: 12px', aria-label="Default select example")
+                        include partials/provinces.pug
+                  .mb-2.row
+                    label.col-sm-3.col-form-label Địa chỉ nơi khởi hành
+                    .col-sm-9
+                      input#tourStartAddress.form-control(style='font-size: 12px', type="text", value="", required)
+                  .mb-3.row
+                    label.col-sm-3.col-form-label Toạ độ nơi khởi hành
+                    .col-sm-9
+                      input#tourStartCoordinate.form-control(style='font-size: 12px', type="text", value="",placeholder="vĩ độ, kinh độ", required)
+                  .mb-3.row
+                    label Các điểm đến
+
+                  .mb-3.row
+                    label.col-sm-7.col-form-label(for="staticRole") Chọn quốc gia
+                    .col-sm-5
+                      select#countrySelect.form-select(style='font-size: 12px', aria-label="Default select example")
+                        // Quốc gia sẽ được tải từ API
+                  #locations-container
+                    .mb-3.row.location-item
+                      label.col-sm-4.col-form-label Điểm đến 1
+                      .col-sm-7
+                        select#location-0-id.form-select(style='font-size: 12px', aria-label="Default select example", name="locations[0][id]", required)
+                          // Thành phố sẽ được tải từ API theo quốc gia                    
+                      .col-sm-1.d-flex.justify-content-center                 
+                        a.remove-location(style='color: red')
+                          svg#i-trash(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 30 30", width="14", height="14", fill="none", stroke="currentcolor", stroke-linecap="round", stroke-linejoin="round", stroke-width="2")
+                            path(d="M28 6 L6 6 8 30 24 30 26 6 4 6 M16 12 L16 24 M21 12 L20 24 M11 12 L12 24 M12 6 L13 2 19 2 20 6")
+                  .mb-3.mt-1.row
+                    button#add-location(type="button", style="color: #4968ca") Thêm điểm đến 
+
+                  .mb-3.row
+                    label Các hướng dẫn viên
+              
+                  #guides-container
+                    .mb-3.row.guide-item
+                      label.col-sm-4.col-form-label HDV 1
+                      .col-sm-7
+                        select#guides-0-id.form-select(style='font-size: 12px', aria-label="Default select example", name="guides[0][id]", required)                 
+                      .col-sm-1.d-flex.justify-content-center                 
+                        a.remove-guide(style='color: red')
+                          svg#i-trash(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 30 30", width="14", height="14", fill="none", stroke="currentcolor", stroke-linecap="round", stroke-linejoin="round", stroke-width="2")
+                            path(d="M28 6 L6 6 8 30 24 30 26 6 4 6 M16 12 L16 24 M21 12 L20 24 M11 12 L12 24 M12 6 L13 2 19 2 20 6")
+                  .mb-3.mt-1.row
+                    button#add-guide(type="button", style="color: #4968ca") Thêm hướng dẫn viên    
+                
+                .col-sm-5
+                  .row.mb-3 
+                    span Lịch trình
+                  #itineraries-container
+                    //////
+                    .mb-3.row.itinerary-item
+                      .mb-3.row   
+                        span Lịch trình ngày 1
+                      .mb-3.row
+                        label.col-sm-4.col-form-label Địa chỉ chi tiết
+                        .col-sm-8
+                          input#itinerary-0-id.form-control(style='font-size: 12px', aria-label="Default select example", name="itineraries[0][address]", required)   
+                      .mb-3.row
+                        label.col-sm-4.col-form-label Toạ độ
+                        .col-sm-8
+                          input#itinerary-0-coordinates.form-control(style='font-size: 12px', aria-label="Default select example", name="itineraries[0][coordinates]" required)  
+                      .row
+                        label.col-sm-2.col-form-label Mô tả
+                        .col-sm-10
+                          textarea#itinerary-0-description(style='width: 100%; height: 100px; font-size: 10px', name="itineraries[0][description]", required)       
+                        .col-sm-1.d-flex.justify-content-center                 
+                          a.remove-itinerary(style='color: red')
+                            svg#i-trash(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 30 30", width="14", height="14", fill="none", stroke="currentcolor", stroke-linecap="round", stroke-linejoin="round", stroke-width="2")
+                              path(d="M28 6 L6 6 8 30 24 30 26 6 4 6 M16 12 L16 24 M21 12 L20 24 M11 12 L12 24 M12 6 L13 2 19 2 20 6")
+                  ////////
+                  .mb-3.mt-1.row
+                    button#add-itinerary(type="button", style="color: #4968ca") Thêm lịch trình 
+            
+              .row.mt-2.d-flex.justify-content-center 
+                button#btnAddTour.btn.btn-success(style="width: 80px" type="submit") Thêm
+              
+          .modal-footer
+            button.btn.btn-secondary(type="button", data-bs-dismiss="modal") Đóng
+   
+  script.
+    //- $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', (event) => {
+      const addLocationButton = document.getElementById('add-location');
+      const locationsContainer = document.getElementById('locations-container');
+      let locationCount = 1;
+      const addItineraryButton = document.getElementById('add-itinerary');
+      const itinerariesContainer = document.getElementById('itineraries-container');
+      let itineraryCount = 1;
+      const addGuideButton = document.getElementById('add-guide');
+      const guidesContainer = document.getElementById('guides-container');
+      let guideCount = 1;
+
+      let countryCodeMap = {};
+      //- loadCountries()
+
+      const translateBatch = async (texts, to) => {
+        console.log('Received request for translation:', { texts });
+        try {
+          const response = await fetch('/api/v1/locations/translate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ texts, to })
+          });
+          const data = await response.json();
+          return data.translations;
+        } catch (error) {
+          console.error('Translation error:', error);
+          return texts;
+        }
+      };
+
+      function loadCountries(callback) {
+        $.ajax({
+          url: 'https://restcountries.com/v3.1/all',
+          method: 'GET',
+          success: async function(data) {
+            console.log("load country")
+            const countrySelect = $('#countrySelect');
+            countrySelect.empty();
+
+            const unMemberCountries = data.filter(country => country.unMember);
+            const countryNames = unMemberCountries.map(country => country.name.common);
+
+            const translatedNames = await translateBatch(countryNames, 'vi');
+            
+            // Cập nhật countryCodeMap với các giá trị đã dịch
+            translatedNames.forEach((translatedName, index) => {
+              const country = unMemberCountries[index];
+              countryCodeMap[translatedName] = country.cca2;
+              countrySelect.append(new Option(translatedName, translatedName));
+            });
+
+            if(callback) callback(); 
+          }
+        });
+      }
+
+     
+      //- function loadCities(countryCode, selectElement, selectedLocation = null) {
+      function loadCities(countryCode, selectElement, selectedLocation = null) {
+        const geonameId = countryCode; // Assuming geonameId for Vietnam
+        console.log(countryCode);
+        if (countryCode === 'VN') {
+          // Load provinces directly from the pug file
+          const provincesContent = `
+            <option value="An Giang">An Giang</option>
+            <option value="Bà Rịa - Vũng Tàu">Bà Rịa - Vũng Tàu</option>
+            <option value="Bạc Liêu">Bạc Liêu</option>
+            <option value="Bắc Kạn">Bắc Kạn</option>
+            <option value="Bắc Giang">Bắc Giang</option>
+            <option value="Bắc Ninh">Bắc Ninh</option>
+            <option value="Bến Tre">Bến Tre</option>
+            <option value="Bình Dương">Bình Dương</option>
+            <option value="Bình Định">Bình Định</option>
+            <option value="Bình Phước">Bình Phước</option>
+            <option value="Bình Thuận">Bình Thuận</option>
+            <option value="Cà Mau">Cà Mau</option>
+            <option value="Cao Bằng">Cao Bằng</option>
+            <option value="Cần Thơ">Cần Thơ</option>
+            <option value="Đà Nẵng">Đà Nẵng</option>
+            <option value="Đắk Lắk">Đắk Lắk</option>
+            <option value="Đắk Nông">Đắk Nông</option>
+            <option value="Điện Biên">Điện Biên</option>
+            <option value="Đồng Nai">Đồng Nai</option>
+            <option value="Đồng Tháp">Đồng Tháp</option>
+            <option value="Gia Lai">Gia Lai</option>
+            <option value="Hà Giang">Hà Giang</option>
+            <option value="Hà Nam">Hà Nam</option>
+            <option value="Hà Nội">Hà Nội</option>
+            <option value="Hà Tĩnh">Hà Tĩnh</option>
+            <option value="Hải Dương">Hải Dương</option>
+            <option value="Hải Phòng">Hải Phòng</option>
+            <option value="Hậu Giang">Hậu Giang</option>
+            <option value="Hòa Bình">Hòa Bình</option>
+            <option value="Hưng Yên">Hưng Yên</option>
+            <option value="Khánh Hòa">Khánh Hòa</option>
+            <option value="Kiên Giang">Kiên Giang</option>
+            <option value="Kon Tum">Kon Tum</option>
+            <option value="Lai Châu">Lai Châu</option>
+            <option value="Lâm Đồng">Lâm Đồng</option>
+            <option value="Lạng Sơn">Lạng Sơn</option>
+            <option value="Lào Cai">Lào Cai</option>
+            <option value="Long An">Long An</option>
+            <option value="Nam Định">Nam Định</option>
+            <option value="Nghệ An">Nghệ An</option>
+            <option value="Ninh Bình">Ninh Bình</option>
+            <option value="Ninh Thuận">Ninh Thuận</option>
+            <option value="Phú Thọ">Phú Thọ</option>
+            <option value="Phú Yên">Phú Yên</option>
+            <option value="Quảng Bình">Quảng Bình</option>
+            <option value="Quảng Nam">Quảng Nam</option>
+            <option value="Quảng Ngãi">Quảng Ngãi</option>
+            <option value="Quảng Ninh">Quảng Ninh</option>
+            <option value="Quảng Trị">Quảng Trị</option>
+            <option value="Sóc Trăng">Sóc Trăng</option>
+            <option value="Sơn La">Sơn La</option>
+            <option value="Tây Ninh">Tây Ninh</option>
+            <option value="Thái Bình">Thái Bình</option>
+            <option value="Thái Nguyên">Thái Nguyên</option>
+            <option value="Thanh Hóa">Thanh Hóa</option>
+            <option value="Thừa Thiên Huế">Thừa Thiên Huế</option>
+            <option value="Tiền Giang">Tiền Giang</option>
+            <option value="TP Hồ Chí Minh">TP Hồ Chí Minh</option>
+            <option value="Trà Vinh">Trà Vinh</option>
+            <option value="Tuyên Quang">Tuyên Quang</option>
+            <option value="Vĩnh Long">Vĩnh Long</option>
+            <option value="Vĩnh Phúc">Vĩnh Phúc</option>
+            <option value="Yên Bái">Yên Bái</option>
+          `;
+          $(selectElement).html(provincesContent);
+          if (selectedLocation) {
+            selectElement.value = selectedLocation;
+          }
+        } else {
+          // Make AJAX call to fetch cities from API
+          $.ajax({
+            url: `http://api.geonames.org/searchJSON?country=${geonameId}&maxRows=100&username=sang&featureCode=ADM1`,
+            method: 'GET',
+            success: async function(data) {
+              console.log("load city")
+              $(selectElement).empty();
+              const cityNames = data.geonames.map(city => city.name);
+              if (countryCode === 'CN' || countryCode === 'ID') {
+                const translatedNames = await translateBatch(cityNames, 'vi');
+                translatedNames.forEach((translatedName, index) => {
+                  //- selectElement.append(new Option(translatedName, data.geonames[index].geonameId));
+                  selectElement.append(new Option(translatedName, translatedName));
+                });
+              } else {
+                cityNames.forEach((cityName, index) => {
+                  //- selectElement.append(new Option(cityName, data.geonames[index].geonameId));
+                  selectElement.append(new Option(cityName, cityName));
+                });
+              }
+              /////////
+              if (selectedLocation) {
+                selectElement.value = selectedLocation;
+              }
+            }
+          });
+        }
+      }
+
+
+      $('#countrySelect').on('change', function() {
+        const selectedCountry = $(this).val();
+        console.log('-----', $(this).val())
+        const countryCode = countryCodeMap[selectedCountry];
+
+
+        //- const locationSelects = locationsContainer.querySelectorAll('.location-item select');
+        //- locationSelects.forEach(select => {
+        loadCities(countryCode, $('#location-0-id'));
+        //- });
+      });
+      /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  
+      $(document).on('show.bs.modal', event => {    // to keep delete button        
+        
+        if(event.relatedTarget.id === 'addTour') {
+          loadCountries();  
+          loadGuideOptions(document.getElementById('guides-0-id'));   // Load initial guide options into the first select element
+          loadCategoryOptions(document.getElementById('categorySelect'));
+        } else if(event.relatedTarget.id === 'btnShowTour') {
+            const tour = JSON.parse(event.relatedTarget.getAttribute('data-tour'))
+
+            loadCountries(function() {
+              const countrySelect = exampleModal.querySelector('#countrySelect')
+              countrySelect.value = `${tour.locations[0].country}`
+            });    
+       
+          
+            //- loadGuideOptions(document.getElementById('guides-0-id'));   // in addGuideSelect
+            // Xóa tất cả các HDV hiện tại
+            document.getElementById('guides-container').innerHTML = '';
+            // Thêm các HDV từ tour
+            tour.guides.forEach(guide => {
+              addGuideSelect(guide);
+            });
+
+            loadCategoryOptions(document.getElementById('categorySelect'), function() {
+              const categorySelect = exampleModal.querySelector('#categorySelect')
+              categorySelect.value = `${tour.category._id}`;
+            });
+
+            console.log(tour.locations)
+
+            // Xóa tất cả các location hiện tại
+            document.getElementById('locations-container').innerHTML = '';
+            // Thêm các location từ tour
+            const countryCode = countryCodeMap[`${tour.locations[0].country}`]
+            tour.locations.forEach(location => {
+              addlocationSelect(countryCode, location);
+            });
+
+            // Xóa tất cả các location hiện tại
+            document.getElementById('itineraries-container').innerHTML = '';
+
+            console.log('lich trinh', tour.itineraries)
+            tour.itineraries.forEach(itinerary => {
+              additinerarySelect(itinerary);
+            });
+
+
+            const exampleModal = document.getElementById('exampleModalAddTour')
+
+            const tourName = exampleModal.querySelector('#tourName')
+            const tourDuration = exampleModal.querySelector('#tourDuration')
+            const maxGroupSize = exampleModal.querySelector('#maxGroupSize')
+            const tourPrice = exampleModal.querySelector('#tourPrice')
+            const tourPriceDiscount = exampleModal.querySelector('#tourPriceDiscount')
+            const tourSummary = exampleModal.querySelector('#tourSummary')
+            const tourDescription = exampleModal.querySelector('#tourDescription')
+            const tourCoverImg = exampleModal.querySelector('#tourCoverImg')
+            const tourImg = exampleModal.querySelector('#tourImg')
+            const tourStartDate = exampleModal.querySelector('#tourStartDate')
+            //- startLocation
+            const tourStartCoordinate = exampleModal.querySelector('#tourStartCoordinate')
+            const tourStartAddress = exampleModal.querySelector('#tourStartAddress')
+            const tourStartProvince = exampleModal.querySelector('#tourStartProvince')
+                       
+
+
+            tourName.value = `${tour.name}`
+            tourDuration.value = `${tour.duration}`
+            maxGroupSize.value = `${tour.maxGroupSize}`
+            tourPrice.value = `${tour.price}`
+            tourPriceDiscount.value = `${tour.priceDiscount}`
+            tourSummary.value = `${tour.summary}`
+            tourDescription.value = `${tour.description}`
+            tourCoverImg.filename = `${tour.imageCover}`
+            tourImg.filename = `${tour.images}`
+            tourStartDate.value = `${new Date(tour.startDate)}`
+            // startLocation
+            tourStartProvince.value = `${tour.startLocation.description}`
+            tourStartAddress.value = `${tour.startLocation.address}`
+            tourStartCoordinate.value = `${tour.startLocation.coordinates}`
+
+          } else {
+
+          }
+      });
+
+      ///////////////////////////////////////////////
+      
+      function loadCategoryOptions(selectElement, callback) {
+        selectElement.innerHTML = "";  // ^^
+        $.ajax({
+          url: '/api/v1/categories',
+          method: 'GET',
+          success: function(data) {
+            console.log("category data",data)
+            data.data.categories.forEach(function(category) {
+              const option = document.createElement('option');
+              option.value = category._id;
+              option.textContent = category.name;
+              selectElement.append(option);
+            });
+            // Call the callback function if provided
+            if(callback) callback(); 
+          },
+          error: function(xhr, status, error) {
+            console.error('Failed to load categories:', error);
+          }
+        });
+      }
+
+      // Function to load guide options into a select element
+      function loadGuideOptions(selectElement, selectedGuideId) {
+        selectElement.innerHTML = ""; // ^^
+        $.ajax({
+          url: '/api/v1/users/guides', // Replace with your actual endpoint URL
+          method: 'GET',
+          success: function(data) {
+            console.log("guide data", data)
+            // Assuming data is an array of guides with id and name properties
+            data.data.guides.forEach(function(guide) {
+              const option = document.createElement('option');
+              option.value = guide._id;
+              option.textContent = guide.name;
+              selectElement.append(option);
+            });
+
+            // Chọn HDV đã chọn trước đó nếu có
+            if (selectedGuideId) {
+              selectElement.value = selectedGuideId;
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error('Failed to load guides:', error);
+          }
+        });
+      }
+
+
+
+      /////////////////////
+      // Thêm hàm để thêm HDV
+      function addGuideSelect(guide = null) {
+        const guidesContainer = document.getElementById('guides-container');
+        //- guideCount = guidesContainer.querySelectorAll('.guide-item').length;
+        const guideIndex = guidesContainer.querySelectorAll('.guide-item').length;;
+        guideCount = guideIndex + 1;
+
+        const guideItem = document.createElement('div');
+        guideItem.className = 'mb-3 row guide-item';
+        guideItem.innerHTML = `
+          <label class="col-sm-4 col-form-label">HDV ${guideIndex + 1}</label>
+          <div class="col-sm-7">
+            <select id="guides-${guideIndex}-id" class="form-select" style="font-size: 12px" aria-label="Default select example" name="guides[${guideIndex}][id]" required></select>
+          </div>
+          <div class="col-sm-1 d-flex justify-content-center">
+            <a class="remove-guide" style="color: red" href="#">
+              <svg id="i-trash" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="14" height="14" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                <path d="M28 6 L6 6 8 30 24 30 26 6 4 6 M16 12 L16 24 M21 12 L20 24 M11 12 L12 24 M12 6 L13 2 19 2 20 6"></path>
+              </svg>
+            </a>
+          </div>
+        `;
+
+        guidesContainer.appendChild(guideItem);
+        loadGuideOptions(guideItem.querySelector('select'), guide ? guide._id : null);
+
+        updateGuideRemoveButtons(); // ^^
+      }
+      
+
+      function addlocationSelect(countryCode, location = null) {
+        const locationsContainer = document.getElementById('locations-container');
+        //- guideCount = guidesContainer.querySelectorAll('.guide-item').length;
+        const locationIndex = locationsContainer.querySelectorAll('.location-item').length;;
+        locationCount = locationIndex + 1;
+
+
+        const locationItem = document.createElement('div');
+        locationItem.classList.add('location-item');
+        locationItem.classList.add('mb-3');
+        locationItem.classList.add('row');
+
+        locationItem.innerHTML = `
+          <label class="col-sm-4 col-form-label">Điểm đến ${locationIndex + 1}</label>
+          <div class="col-sm-7">
+            <select style='font-size: 12px' class="form-select" id="location-${locationIndex}-id" name="locations[${locationIndex}][id]" required></select>
+          </div>
+          <div class="col-sm-1 d-flex justify-content-center">
+            <a class="remove-location" style="color: red">
+              <svg id="i-trash" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="14" height="14" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                <path d="M28 6 L6 6 8 30 24 30 26 6 4 6 M16 12 L16 24 M21 12 L20 24 M11 12 L12 24 M12 6 L13 2 19 2 20 6"></path></svg></a>
+          </div>
+        `;
+
+
+        locationsContainer.appendChild(locationItem);
+        loadCities(countryCode, locationItem.querySelector('select'), location ? location.name : null);
+
+        updateLocationRemoveButtons(); 
+      }
+
+      function additinerarySelect(itinerary) {
+        const itinerariesContainer = document.getElementById('itineraries-container');
+        //- guideCount = guidesContainer.querySelectorAll('.guide-item').length;
+        const itineraryIndex = itinerariesContainer.querySelectorAll('.itinerary-item').length;;
+        itineraryCount = itineraryIndex + 1;
+
+
+        const itineraryItem = document.createElement('div');
+        itineraryItem.classList.add('itinerary-item', 'mb-3', 'row');
+        itineraryItem.innerHTML = `
+          <div class="mb-3 row">
+            <span>Lịch trình ngày ${itineraryIndex + 1}</span>
+          </div>
+          <div class="mb-3 row">
+            <label class="col-sm-4 col-form-label">Địa chỉ chi tiết</label>
+            <div class="col-sm-8">
+              <input value="${itinerary.address}" style='font-size: 12px' class="form-control" id="itinerary-${itineraryIndex}-id" name="itineraries[${itineraryIndex}][address]" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label class="col-sm-4 col-form-label">Toạ độ</label>
+            <div class="col-sm-8">
+              <input value="${itinerary.coordinates}" style='font-size: 12px' class="form-control" id="itinerary-${itineraryIndex}-coordinates" name="itineraries[${itineraryIndex}][coordinates]" required>
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-2 col-form-label">Mô tả</label>
+            <div class="col-sm-10">
+              <textarea style='width: 100%; height: 100px; font-size: 10px' id="itinerary-${itineraryIndex}-description" name="itineraries[${itineraryIndex}][description]" required>${itinerary.description}</textarea>
+            </div>
+          </div>
+          <div class="col-sm-1 d-flex justify-content-center mt-3">
+            <a class="remove-itinerary" style="color: red">
+              <svg id="i-trash" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="14" height="14" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                <path d="M28 6 L6 6 8 30 24 30 26 6 4 6 M16 12 L16 24 M21 12 L20 24 M11 12 L12 24 M12 6 L13 2 19 2 20 6"></path></svg></a>
+          </div>
+        `;
+        itinerariesContainer.appendChild(itineraryItem);
+
+        updateItineraryRemoveButtons();
+        
+      }
+
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      addLocationButton.addEventListener('click', () => {
+        locationCount++;
+
+        const locationItem = document.createElement('div');
+        locationItem.classList.add('location-item');
+        locationItem.classList.add('mb-3');
+        locationItem.classList.add('row');
+
+        locationItem.innerHTML = `
+          <label class="col-sm-4 col-form-label">Điểm đến ${locationCount}</label>
+          <div class="col-sm-7">
+            <select style='font-size: 12px' class="form-select" id="location-${locationCount -1}-id" name="locations[${locationCount - 1}][id]" required></select>
+          </div>
+          <div class="col-sm-1 d-flex justify-content-center">
+            <a class="remove-location" style="color: red">
+              <svg id="i-trash" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="14" height="14" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                <path d="M28 6 L6 6 8 30 24 30 26 6 4 6 M16 12 L16 24 M21 12 L20 24 M11 12 L12 24 M12 6 L13 2 19 2 20 6"></path></svg></a>
+          </div>
+        `;
+
+        locationsContainer.appendChild(locationItem);
+
+        updateLocationRemoveButtons();
+       
+        loadCities(countryCodeMap[$('#countrySelect').val()], $(`#location-${locationCount -1}-id`)); // Tải thành phố cho select mới
+      });
+
+      function updateLocationRemoveButtons() {
+        const locationItems = locationsContainer.getElementsByClassName('location-item');
+        Array.from(locationItems).forEach((item, index) => {
+          const removeButton = item.querySelector('.remove-location');
+          if (index === 0) {
+            removeButton.style.display = 'none';
+          } else if (index === locationItems.length - 1) {
+            removeButton.style.display = 'block';
+          } else {
+            removeButton.style.display = 'none';
+          }
+        });
+      }
+
+      updateLocationRemoveButtons();
+
+      ///
+
+      // Event delegation for dynamically added remove buttons ^^
+      locationsContainer.addEventListener('click', function(event) {
+        if (event.target.closest('.remove-location')) {
+          const item = event.target.closest('.location-item');
+
+          /////////////////////////////////////////////////////////////
+          // Lấy tất cả các input cùng cấp với nút được click
+          const items = item.querySelectorAll('select');
+          
+          // In ra giá trị của tất cả các input
+          items.forEach((item, index) => {
+            console.log(item.id, item.value);
+          });
+          /////////////////////////////////////////////////////////
+
+          locationsContainer.removeChild(item);
+          locationCount--;
+          updateLocationRemoveButtons();
+        }
+      });
+
+      //////////////////////////////////////////////////////////////////////////////////////////////////
+
+      addItineraryButton.addEventListener('click', () => {
+        itineraryCount++;
+        const itineraryItem = document.createElement('div');
+        itineraryItem.classList.add('itinerary-item', 'mb-3', 'row');
+        itineraryItem.innerHTML = `
+          <div class="mb-3 row">
+            <span>Lịch trình ngày ${itineraryCount}</span>
+          </div>
+          <div class="mb-3 row">
+            <label class="col-sm-4 col-form-label">Địa chỉ chi tiết</label>
+            <div class="col-sm-8">
+              <input style='font-size: 12px' class="form-control" id="itinerary-${itineraryCount - 1}-id" name="itineraries[${itineraryCount - 1}][address]" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label class="col-sm-4 col-form-label">Toạ độ</label>
+            <div class="col-sm-8">
+              <input style='font-size: 12px' class="form-control" id="itinerary-${itineraryCount - 1}-coordinates" name="itineraries[${itineraryCount - 1}][coordinates]" required>
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-2 col-form-label">Mô tả</label>
+            <div class="col-sm-10">
+              <textarea style='width: 100%; height: 100px; font-size: 10px' id="itinerary-${itineraryCount - 1}-description" name="itineraries[${itineraryCount - 1}][description]" required></textarea>
+            </div>
+          </div>
+          <div class="col-sm-1 d-flex justify-content-center mt-3">
+            <a class="remove-itinerary" style="color: red">
+              <svg id="i-trash" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="14" height="14" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                <path d="M28 6 L6 6 8 30 24 30 26 6 4 6 M16 12 L16 24 M21 12 L20 24 M11 12 L12 24 M12 6 L13 2 19 2 20 6"></path></svg></a>
+          </div>
+        `;
+        itinerariesContainer.appendChild(itineraryItem);
+
+        updateItineraryRemoveButtons();
+      });
+
+      function updateItineraryRemoveButtons() {
+        const itineraryItems = itinerariesContainer.getElementsByClassName('itinerary-item');
+        Array.from(itineraryItems).forEach((item, index) => {
+          const removeButton = item.querySelector('.remove-itinerary');
+          if (index === 0) {
+            removeButton.style.display = 'none';
+          } else if (index === itineraryItems.length - 1) {
+            removeButton.style.display = 'block';
+          } else {
+            removeButton.style.display = 'none';
+          }
+        });
+      }
+
+
+      // Event delegation for dynamically added remove buttons
+      itinerariesContainer.addEventListener('click', function(event) {
+        if (event.target.closest('.remove-itinerary')) {
+          const item = event.target.closest('.itinerary-item');
+
+            /////////////////////////////////////////////////////////////
+          // Lấy tất cả các input cùng cấp với nút được click
+          const items = item.querySelectorAll('input, textarea');
+          
+          // In ra giá trị của tất cả các input
+          items.forEach(item => {
+            console.log(item.id, item.value);
+          });
+          /////////////////////////////////////////////////////////
+
+          itinerariesContainer.removeChild(item);
+          itineraryCount--;
+          updateItineraryRemoveButtons();
+        }
+      });
+
+      updateItineraryRemoveButtons();
+
+      ///////////////////////////////////////////
+     
+
+      addGuideButton.addEventListener('click', () => {
+        guideCount++;
+        const guideItem = document.createElement('div');
+        guideItem.classList.add('guide-item', 'mb-3', 'row');
+        guideItem.innerHTML = `
+          <label class="col-sm-4 col-form-label">HDV ${guideCount}</label>
+          <div class="col-sm-7">
+            <select style='font-size: 12px' class="form-select" id="guides-${guideCount - 1}-id" name="guides[${guideCount - 1}][id]" required></select>
+          </div>
+          <div class="col-sm-1 d-flex justify-content-center">
+            <a class="remove-guide" style="color: red">
+              <svg id="i-trash" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="14" height="14" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                <path d="M28 6 L6 6 8 30 24 30 26 6 4 6 M16 12 L16 24 M21 12 L20 24 M11 12 L12 24 M12 6 L13 2 19 2 20 6"></path>
+              </svg>
+            </a>
+          </div>
+        `;
+        guidesContainer.appendChild(guideItem);
+        updateGuideRemoveButtons();
+
+        loadGuideOptions($(`#guides-${guideCount -1}-id`)); // ^^
+      });
+
+      function updateGuideRemoveButtons() {
+        const guideItems = guidesContainer.getElementsByClassName('guide-item');
+        Array.from(guideItems).forEach((item, index) => {
+          const removeButton = item.querySelector('.remove-guide');
+          if (index === 0) {
+            removeButton.style.display = 'none';
+          } else if (index === guideItems.length - 1) {
+            removeButton.style.display = 'block';
+          } else {
+            removeButton.style.display = 'none';
+          }
+        });
+      }
+
+      updateGuideRemoveButtons();
+
+      guidesContainer.addEventListener('click', function(event) {
+        if (event.target.closest('.remove-guide')) {
+          const item = event.target.closest('.guide-item');
+
+           /////////////////////////////////////////////////////////////
+          // Lấy tất cả các input cùng cấp với nút được click
+          const items = item.querySelectorAll('select');
+          
+          // In ra giá trị của tất cả các input
+          items.forEach(item => {
+            console.log(item.id, item.value);
+          });
+          /////////////////////////////////////////////////////////
+          guidesContainer.removeChild(item);
+          guideCount--;
+          updateGuideRemoveButtons();
+        }
+      });
+
+      ////////////////////////////////////////////////////////////////////////////////////
+      function updateTableAndPagination(page, rowsPerTourPage, searchQuery) {
+        $.get('/admin/tour', { page: page, rowsPerPage: rowsPerTourPage, search: searchQuery }, function(data) {
+          $('#tourTable').html(data.tourTableHtml);
+          $('#paginationWrapper').html(data.paginationHtml);
+        });
+      }
+      
+      $(document).on('click', '.page-link', function(e) {
+        e.preventDefault();
+        const page = $(this).data('page');
+        const rowsPerTourPage = $('.rowsPerTourPage').val();
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth' 
+        });
+        const searchQuery = $('#searchTour').val();
+        updateTableAndPagination(page, rowsPerTourPage, searchQuery);
+      });
+
+      $('.rowsPerTourPage').on('change', function() {
+        const rowsPerTourPage = $(this).val();
+        const searchQuery = $('#searchTour').val();
+        updateTableAndPagination(1, rowsPerTourPage, searchQuery); 
+      });
+
+      function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      const debouncedSearch = debounce(function() {
+        const searchQuery = $('#searchTour').val();
+        const rowsPerTourPage = $('.rowsPerTourPage').val();
+        console.log(searchQuery)
+        updateTableAndPagination(1, rowsPerTourPage, searchQuery);
+      }, 300); // Chờ 300ms sau khi người dùng ngừng nhập
+
+      $('#searchTour').on('input', debouncedSearch);
+
+      // validation
+      const forms = document.querySelectorAll('.needs-validation')
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          event.preventDefault() // ngăn submit và reload
+          event.stopPropagation()
+          form.classList.add('was-validated')
+                    
+        }, false)
+      })
+
+      ///////////////////
+      
+    
+      
+    });
+

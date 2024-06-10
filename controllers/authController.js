@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const sendEmail = require('../utils/email');
+const Email = require('../utils/email');
 const util = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
@@ -35,39 +35,64 @@ const createSendToken = (user, statusCode, res) => {
     })
 }
 exports.signup = catchAsync(async (req, res, next) => {
+    // check if email already exists
+    const user = await User.findOne({ email: req.body.email });
+    if(user) {
+        return next(new AppError('Địa chỉ email này đã được sử dụng. Vui lòng chọn một địa chỉ email khác.', 400));
+    }
+    
     const newUser = await User.create(req.body);
-    // const newUser = await User.create({
-    //     name: req.body.name,
-    //     email: req.body.email,
-    //     password: req.body.password,
-    //     passwordConfim: req.body.passwordConfim
-    // });
 
-    createSendToken(newUser, 201, res);
+    const url = `${req.protocol}://${req.get('host')}/me`;
+  // console.log(url);
+    await new Email(newUser, url).sendWelcome();
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            newUser
+        }
+    })
+
+    // createSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
     const { email, password } = req.body;
 
     if(!email || !password) {
-        return next(new AppError('Please provide email and password', 400));
+        return next(new AppError('Vui lòng cung cấp email và mật khẩu', 400));
     }
 
     const user = await User.findOne( { email: email }).select('+password');
 
     if(!user || !(await user.isCorrectPassword(password, user.password))) {
-        return next(new AppError('Incorrect email or password', 401));
+        return next(new AppError('Email hoặc mật khẩu không chính xác', 401));
     }
     
     createSendToken(user, 200, res);
 });
+
+exports.logout = (req, res) => {
+    res.cookie('jwt', 'loggedout', {
+        expires: new Date(Date.now() + 10 * 1000),  // 10s
+        httpOnly: true                     // cannot be accessed or modified in any way by the browser.
+    });  
+
+    res.status(200).json({
+        status: 'success'
+    })
+};
 
 exports.protect = catchAsync(async (req, res, next) => {
     // 1) Getting token and check of it's there
     let token;
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         token = req.headers.authorization.split(' ')[1];
+    } else if(req.cookies.jwt) {
+        token = req.cookies.jwt;
     }
+
     if(!token) {
         return next(new AppError('You are not logged in! Please log in to get access.'));
     }
@@ -87,9 +112,39 @@ exports.protect = catchAsync(async (req, res, next) => {
     };
 
     req.user = currentUser;
+    res.locals.user = currentUser;
 
     next();
 });
+
+// only for rendered pages, no errors
+exports.isLoggedIn = async (req, res, next) => {
+    if(req.cookies.jwt) {
+        try {
+            // 1) Verification token
+            const decoded = await util.promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+        
+            // 2) check if user still exist
+            const currentUser = await User.findById(decoded.id);
+            if(!currentUser) {
+                return next();
+            }
+
+            // 3) check if user changed password after the token was issued
+            if(currentUser.isChangedPasswordAfter(decoded.iat)) {
+                return next();
+            };
+
+            // there is a loggedin user
+            res.locals.user = currentUser;
+            req.user = currentUser;
+            return next();   
+        } catch (err) {
+            return next();
+        }
+    }
+    next();
+};
 
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
@@ -111,18 +166,11 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     const resetToken = user.createPasswordResetToken();
     await user.save({ validateBeforeSave: false });
     
-    // 3) Sent it to user's email
-    const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
-
-    const message = `Forgot your password? Submit a PATCH request with your new password 
-    and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
-
     try {
-        await sendEmail({
-            email: user.email,
-            subject: 'Your password reset token (valid for 10 min)',
-            message
-        });
+        // 3) Sent it to user's email
+        // const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+        const resetURL = `${req.protocol}://${req.get('host')}/resetPassword/${resetToken}`;
+        await new Email(user, resetURL).sendPasswordReset();
 
         res.status(200).json({
             status: 'success',
@@ -151,17 +199,22 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     user.passwordResetExpires = undefined;
     
     await user.save();
+
+    res.status(200).json({
+        status: 'success',
+        message: 'Password Changed!'
+    });
         
     // 3) update passwordChangedAt property for the user
     // 4) log the user in, send JWT
-    createSendToken(user, 200, res);
+    // createSendToken(user, 200, res);    <-> login
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
 
     const user = await User.findById(req.user.id).select('+password');
     
-    if(!(await user.isCorrectPassword(req.body.currentPassword, user.password))) {
+    if(!(await user.isCorrectPassword(req.body.passwordCurrent, user.password))) {
         return next(new AppError('Your current password is wrong', 401));
     }
 

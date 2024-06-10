@@ -1,0 +1,52 @@
+.col-xs-12.no-padding
+  .grid__container.grid__container--popular.super-cards
+    .grid__item.grid__item--1
+      .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/03/02/10/phuquoc-show.webp');")
+        a(href="#")
+          .col-xs-12.card-bg
+            .info
+              p.title Phú Quốc
+      //- 
+    .grid__item.grid__item--2
+      .col-xs-12.super-card.card-auto-height(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/03/02/10/vungtau-show.webp');")
+        a(href="#")
+          .col-xs-12.card-bg
+            .info
+              p.title Vũng Tàu
+    .grid__item.grid__item--3
+      .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2024/05/09/16/da-lat.png');")
+        a(href="#")
+          .col-xs-12.card-bg
+            .info
+              p.title Đà Lạt
+    .grid__item.grid__item--4
+      .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/03/02/10/quynhon-show.webp');")
+        a(href="#")
+          .col-xs-12.card-bg
+            .info
+              p.title Quy Nhơn
+    .grid__item.grid__item--5
+      .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/03/02/10/phanthiet-show.webp');")
+        a(href="#")
+          .col-xs-12.card-bg
+            .info
+              p.title Phan Thiết
+    .grid__item.grid__item--6
+      .col-xs-12.super-card.card-auto-height(style="background-image: url('//cdn1.ivivu.com/iVivu/2024/05/09/16/nha-trang.jpg');")
+        a(href="#")
+          .col-xs-12.card-bg
+            .info
+              p.title Nha Trang
+    .grid__item.grid__item--7
+      .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2024/05/09/16/da-nang.png');")
+        - var currentDate = new Date().toISOString().substr(0, 10);
+        a(href=`/search-tour?type=domestic&destination=Đà+Nẵng&startDate=${currentDate}`)
+          .col-xs-12.card-bg
+            .info
+              p.title Đà Nẵng
+    .grid__item.grid__item--8
+      .col-xs-12.super-card(style="background-image: url('//cdn1.ivivu.com/iVivu/2023/03/02/10/phuyen-show.webp');")
+        a(href="#")
+          .col-xs-12.card-bg
+            .info
+              p.title Phú Yên
