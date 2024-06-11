@@ -120,6 +120,7 @@ exports.checkLocations = catchAsync(async (req, res, next) => {
     next();
 });
 
+
 // exports.translate = catchAsync(async (req, res, next) => {
 //     try {
 //         const { texts, to } = req.body;

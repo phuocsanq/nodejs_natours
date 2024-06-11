@@ -19,7 +19,7 @@ const tourSchema = new mongoose.Schema({
     slug : String,
     active: {
         type: Boolean,
-        default: true
+        default: false
     },
     duration: {
         type: Number,

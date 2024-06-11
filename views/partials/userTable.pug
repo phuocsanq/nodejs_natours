@@ -154,6 +154,11 @@ script.
           $('#collapseExample').collapse('hide');
         }
       }
+      ////////// remove validate
+      const forms = document.querySelectorAll('.needs-validation')
+      Array.from(forms).forEach(form => {  
+        form.classList.remove('was-validated');
+      })
     });
 
   })

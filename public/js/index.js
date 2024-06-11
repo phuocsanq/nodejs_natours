@@ -11,6 +11,8 @@ import { updateUserInfor, updateUserPassword } from './updateUser'
 import { createUser } from './createUser'
 import { deleteUser } from './deleteUser'
 import { createTour } from './createTour'
+import { saveTour } from './saveTour'
+import { deleteTour } from './deleteTour'
 
 import { updateGuideInfor, updateGuidePassword } from './updateGuide'
 import { createGuide } from './createGuide'
@@ -39,6 +41,7 @@ const btnChangGuideInfor = document.getElementById('changGuideInfor');
 const btnChangGuidePass = document.getElementById('changGuidePass');
 const btnAddGuide = document.getElementById('btnAddGuide');
 const btnDeleteGuide = document.getElementById('deleteGuide');
+const btnDeleteTour = document.getElementById('deleteTour');
 
 const addTourForm = document.querySelector('.form--add-tour');
 
@@ -376,8 +379,6 @@ if(addTourForm) {
 
     };
 
-    // console.log('-------', tourData)
-
     // Collect itineraries
     $('.itinerary-item').each(function(index) {
       const itineraryItem = {
@@ -489,8 +490,10 @@ if(addTourForm) {
     //   }
     // });
 
-
-    createTour(formData)
+    const searchQuery = $('#searchTour').val();
+    const page = $('.page-link').data('page');
+    const rowsPerTourPage = $('.rowsPerTourPage').val();
+    createTour(formData, page, rowsPerTourPage, searchQuery)
 
     // Send AJAX request to save the tour
     // $.ajax({
@@ -508,61 +511,113 @@ if(addTourForm) {
     // });
     // console.log(tourData)
   });
-}
 
-/*
-{
-  "name": "test tour",
-  "category": "664b565dc81e7e9575e0d184",
-  "duration": "12",
-  "maxGroupSize": "12",
-  "price": "9999",
-  "priceDiscount": "5",
-  "summary": "tóm tắt tour",
-  "description": "mô tả tour",
-  "imageCover": {  // string
-      "0": {}
-  },
-  "images": {  // [string]
-      "0": {},
-      "1": {},
-      "2": {}
-  },
-  "startDate": "2024-06-20",
-  "startLocation": {
-      "coordinates": "12,456",
-      "address": "12 âu cơ",
-      "description": "Đà Nẵng"
-  },
-  "countryLocation": "Nhật Bản",
-  "locations": [
-      "Kyoto",
-      "Aichi"
-  ],
-  "guides": [
-      "5c8a21f22f8fb814b56fa18a",
-      "5c8a22c62f8fb814b56fa18b"
-  ],
-  "itineraries": [
-      {
-          "day": 1,
-          "address": "địa chỉ ngày 1",
-          "coordinates": [
-              1111111111,
-              11111111111
-          ],
-          "description": "mô tả hoạt động ngày 1"
+  $('#btnSaveTour').on('click', function() {
+    const tourData = {
+      name: $('#tourName').val(),
+      category: $('#categorySelect').val(),  
+      duration: $('#tourDuration').val(),  
+      maxGroupSize: $('#maxGroupSize').val(), 
+      price: $('#tourPrice').val(),   
+      priceDiscount: $('#tourPriceDiscount').val(),
+      summary: $('#tourSummary').val(),  
+      description: $('#tourDescription').val(), 
+      imageCover: document.getElementById('tourCoverImg').files,  
+      images: document.getElementById('tourImg').files,                 
+      startDate: $('#tourStartDate').val(),
+      // startLocation
+      startLocation: {
+        coordinates: $('#tourStartCoordinate').val(),
+        address: $('#tourStartAddress').val(),
+        description: $('#tourStartProvince').val()
       },
-      {
-          "day": 2,
-          "address": "địa chỉ ngày 2",
-          "coordinates": [
-              2222222,
-              222222222222
-          ],
-          "description": "mô tả hoạt động ngày 2"
-      }
-  ]
+      country: $('#countrySelect').val(),
+      provinces: [],   
+      
+      
+      //
+      guides: [],                                
+      itineraries: []                             
+
+    };
+
+    // Collect itineraries
+    $('.itinerary-item').each(function(index) {
+      const itineraryItem = {
+          day: index + 1,
+          address: $(this).find('input[name^="itineraries"][name$="[address]"]').val(),
+          coordinates: $(this).find('input[name^="itineraries"][name$="[coordinates]"]').val(),
+          description: $(this).find('textarea[name^="itineraries"][name$="[description]"]').val()
+      };
+      tourData.itineraries.push(itineraryItem);
+    });
+  
+
+    
+    // Collect locations
+    $('.location-item select').each(function() {
+      tourData.provinces.push($(this).val());
+    });
+
+    // Collect guides
+    $('.guide-item select').each(function() {
+      tourData.guides.push($(this).val());
+    });
+
+    // Create FormData object to send files
+    const formData = new FormData();
+    formData.append('name', tourData.name);
+    formData.append('category', tourData.category);
+    formData.append('duration', tourData.duration);
+    formData.append('maxGroupSize', tourData.maxGroupSize);
+    formData.append('price', tourData.price);
+    formData.append('priceDiscount', tourData.priceDiscount);
+    formData.append('summary', tourData.summary);
+    formData.append('description', tourData.description);
+    formData.append('startDate', tourData.startDate);
+    formData.append('startLocation', JSON.stringify(tourData.startLocation));
+
+    formData.append('country', tourData.country);
+    formData.append('provinces', JSON.stringify(tourData.provinces));
+
+    formData.append('guides', JSON.stringify(tourData.guides));
+    formData.append('itineraries', JSON.stringify(tourData.itineraries));
+    
+    // Append files
+    const imageCover = document.getElementById('tourCoverImg').files[0];
+    if (imageCover) {
+      formData.append('imageCover', imageCover);
+    }
+
+    const images = document.getElementById('tourImg').files;
+    for (let i = 0; i < images.length; i++) {
+      formData.append('images', images[i]);
+    }
+
+    const tourId = $('#tourId').val()
+    // console.log("id", tourId)
+    const searchQuery = $('#searchTour').val();
+    const page = $('.page-link').data('page');
+    const rowsPerTourPage = $('.rowsPerTourPage').val();
+
+    saveTour(tourId, formData, page, rowsPerTourPage, searchQuery)
+
+  });
 }
 
-*/
+
+if(btnDeleteTour)
+  btnDeleteTour.addEventListener('click', async () => {
+    console.log('delete tour clicked')
+
+    const exampleModal = document.getElementById('exampleModalDeleteTour');
+
+    const id = exampleModal.querySelector('.modal-body input#deleteTourId').value;
+
+    const searchQuery = $('#searchGuide').val();
+    const page = $('.page-link').data('page');
+    const rowsPerPage = $('.rowsPerTourPage').val();
+    deleteTour(id, page, rowsPerPage, searchQuery);
+  });
+
+

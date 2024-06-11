@@ -25,14 +25,17 @@ table.table
           td= `${tour.currentGroupSize}/${tour.maxGroupSize}`
         td= `${tour.price.toLocaleString('vi-VN')}`
         td= `${tour.priceDiscount}`
+        //- td 
+          //- .form-check.form-switch
+          //-   input#flexSwitchCheckDefault.form-check-input(type="checkbox", role="switch", data-bs-toggle="modal", data-bs-target="#exampleModalDeleteTour")
         - if(tour.active === true)
           td 
             .form-check.form-switch
-              input#flexSwitchCheckDefault.form-check-input(type="checkbox", role="switch" checked)
+              input#flexSwitchCheckDefault.form-check-input(type="checkbox", role="switch", data-bs-toggle="modal", data-bs-target="#exampleModalActiveTour", checked=true, data-tour=tour)
         - else
           td 
             .form-check.form-switch
-              input#flexSwitchCheckDefault.form-check-input(type="checkbox", role="switch")        
+              input#flexSwitchCheckDefault.form-check-input(type="checkbox", role="switch", data-bs-toggle="modal", data-bs-target="#exampleModalActiveTour",checked=false, data-tour=tour)        
         
         td.d-flex.gap-1
           button#btnShowTour.btn.btn-outline-info(type="button", data-bs-toggle="modal", data-bs-target="#exampleModalAddTour", data-tour=tour)
@@ -40,7 +43,7 @@ table.table
               circle(cx="17", cy="15", r="1")
               circle(cx="16", cy="16", r="6")
               path(d="M2 16 C2 16 7 6 16 6 25 6 30 16 30 16 30 16 25 26 16 26 7 26 2 16 2 16 Z")
-          button.btn.btn-outline-danger(type="button", data-bs-toggle="modal", data-bs-target="#exampleModalDeleteTour", data-tour=tour)
+          button#btnDeleteTour.btn.btn-outline-danger(type="button", data-bs-toggle="modal", data-bs-target="#exampleModalDeleteTour", data-tour=tour)
             svg#i-trash(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 30 30", width="14", height="14", fill="none", stroke="currentcolor", stroke-linecap="round", stroke-linejoin="round", stroke-width="2")
               path(d="M28 6 L6 6 8 30 24 30 26 6 4 6 M16 12 L16 24 M21 12 L20 24 M11 12 L12 24 M12 6 L13 2 19 2 20 6")
 

@@ -14,7 +14,7 @@ export const login = async (email, password, redirectUrl) => {
     });
 
     if (res.data.status === 'success') {
-      showAlert('success', 'Logged in successfully!');
+      showAlert('success', 'Đăng nhập thành công!');
       // console.log('ROLE---', res.data.data.user.role);
       if(res.data.data.user.role === 'admin') {
         window.setTimeout(() => {
@@ -29,7 +29,6 @@ export const login = async (email, password, redirectUrl) => {
     }
   } catch (err) {
     showAlert('error', err.response.data.message);
-    // alert('error', err.response.data.message);
   }
 };
 
@@ -46,7 +45,7 @@ export const logout = async () => {
       }
   } catch (err) {
     // console.log(err.response);
-    showAlert('error', 'Error logging out! Try again.');
+    showAlert('error', 'Lỗi! Vui lòng thử lại.');
   }
 };
 
@@ -64,14 +63,12 @@ export const signup = async (name, email, password, passwordConfirm) => {
     });
 
     if (res.data.status === 'success') {
-      showAlert('success', 'Your account has been successfully created!');
-      // alert('Logged in successfully!');
+      showAlert('success', 'Đăng ký tài khoản thành công!');
       window.setTimeout(() => {
         location.assign('/login');
       }, 1500);
     }
   } catch (err) {
     showAlert('error', err.response.data.message);
-    // alert('error', err.response.data.message);
   }
 };

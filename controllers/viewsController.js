@@ -433,11 +433,12 @@ exports.getSearchTourForm = catchAsync(async (req, res, next) => {
     const promotion = req.query.promotion;
     const sort = req.query.sort;
 
-    const currentDate = new Date();
-    // currentDate.setHours(0, 0, 0, 0); // Đặt thời gian thành 00:00:00.000 để so sánh ngày
+    let currentDate = new Date(); // 2024-06-10T17:16:36.006Z
+
+    // startDate.setHours(0, 0, 0, 0); // Đặt thời gian thành 00:00:00.000 để so sánh ngày
 
     if (new Date(startDate) < currentDate) {
-        startDate = currentDate;
+        startDate = currentDate.toISOString().split('T')[0];
     }
     console.log(currentDate);
     console.log(startDate);
@@ -457,7 +458,7 @@ exports.getSearchTourForm = catchAsync(async (req, res, next) => {
     const matchObject = {
         'startDate': { $gte: new Date(startDate) }
     };
-    const conditions = [];
+    const conditions = [{ active: true }];
 
     if(departure) {
         conditions.push({ 'startLocation.description': departure });
@@ -894,7 +895,6 @@ exports.getAdminTourPage = catchAsync(async (req, res) => {
         };
     }
 
-    // query.active = true; // Điều kiện để chỉ lấy các tour đang hoạt động
 
     const totalTours = await Tour.countDocuments(query);
 

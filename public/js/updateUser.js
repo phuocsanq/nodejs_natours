@@ -15,7 +15,7 @@ export const updateUserInfor = async (userId, name, page, rowsPerPage, searchQue
     if (res.data.status === 'success') {
       showAlert('success', 'Cập nhật thông tin người dùng thành công!');
       $.get(window.location.href, { page: page + 1, rowsPerPage: rowsPerPage, search: searchQuery }, function(data) {
-        $('#guideTable').html(data.guideTableHtml);
+        $('#userTable').html(data.userTableHtml);
         $('#paginationWrapper').html(data.paginationHtml);
       });
     }
@@ -39,7 +39,7 @@ export const updateUserPassword = async (userId, password, passwordConfirm, page
     if (res.data.status === 'success') {
       showAlert('success', 'Cập nhật mật khẩu người dùng thành công!');
       $.get(window.location.href, { page: page + 1, rowsPerPage: rowsPerPage, search: searchQuery }, function(data) {
-        $('#guideTable').html(data.guideTableHtml);
+        $('#userTable').html(data.userTableHtml);
         $('#paginationWrapper').html(data.paginationHtml);
       });
     }

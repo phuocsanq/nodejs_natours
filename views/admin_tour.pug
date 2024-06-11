@@ -6,12 +6,7 @@ block content_admin
   script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous")
 
   style.
-    #itineraries-container {
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 5px;
-    }
-
+    #itineraries-container,
     #guides-container,
     #locations-container {
       border: 1px solid #ccc;
@@ -47,7 +42,7 @@ block content_admin
       .modal-dialog
         .modal-content
           .modal-header.d-flex.justify-content-center
-            h1#exampleModalLabel.modal-title.fs-5(style='color: #28b487') THÊM TOUR MỚI
+            h1#modalTitle.modal-title.fs-5(style='color: #28b487')
             button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
           .modal-body.mt-3.mb-3
             form.form--add-tour.row.needs-validation(novalidate)
@@ -57,6 +52,7 @@ block content_admin
                     label.col-sm-3.col-form-label Tên tour
                     .col-sm-9
                       input#tourName.form-control(style='font-size: 12px', type="text", value="", required)
+                      input#tourId.form-control(style='font-size: 12px', type="hidden")
                   .mb-3.row
                     label.col-sm-3.col-form-label(for="staticRole") Danh mục
                     .col-sm-9
@@ -176,12 +172,89 @@ block content_admin
                   .mb-3.mt-1.row
                     button#add-itinerary(type="button", style="color: #4968ca") Thêm lịch trình 
             
-              .row.mt-2.d-flex.justify-content-center 
-                button#btnAddTour.btn.btn-success(style="width: 80px" type="submit") Thêm
+              .row.mt-2
+                .col-sm-4.d-flex.justify-content-center 
+                  a#btnReviewTour.btn.btn-info(style="display: none;")
+                    svg#i-eye(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 30 30", width="14", height="14", fill="none", stroke="currentcolor", stroke-linecap="round", stroke-linejoin="round", stroke-width="2")
+                      circle(cx="17", cy="15", r="1")
+                      circle(cx="16", cy="16", r="6")
+                      path(d="M2 16 C2 16 7 6 16 6 25 6 30 16 30 16 30 16 25 26 16 26 7 26 2 16 2 16 Z")
+                    | &nbsp
+                    span Xem tour
+                .col-sm-4.d-flex.justify-content-center 
+                  button#btnAddTour.btn.btn-success(style="width: 80px; display: none;" type="submit") Thêm
+                  button#btnSaveTour.btn.btn-success(style="width: 80px; display: none;" type="submit") Lưu
+                  //- .col-sm-12.d-flex.justify-content-center
+                  span#editTourNoti(style='color: #dd2a2a') Không thể thay đổi thông tin tour đang kích hoạt
+                .col-sm-4
               
           .modal-footer
             button.btn.btn-secondary(type="button", data-bs-dismiss="modal") Đóng
-   
+    // Modal delete tour
+    #exampleModalDeleteTour.modal.fade(tabindex="-1", aria-labelledby="exampleModalLabel", aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header.d-flex.justify-content-center
+            h1#exampleModalLabel.modal-title.fs-5(style='color: #28b487') XOÁ TOUR
+            button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
+          .modal-body
+            .row
+              .col-sm-1
+              .col-sm-10
+                
+                .row
+                  .col-sm-12.d-flex.justify-content-center
+                    label#confirmDeleteTour.col-form-label Bạn chắc chắc muốn xoá tour?
+                .mb-3.row 
+                  .col-sm-12.d-flex.justify-content-center
+                    input#deleteTourId(style='display: none')  
+                    label#deleteTourName.col-form-label(style='color: green')
+                .mb-3.row
+                  .col-sm-4
+                  .col-sm-4.d-flex.justify-content-center
+                    button#deleteTour.btn.btn-danger(type="submit") Xoá tour
+                  .col-sm-4
+                  .col-sm-12.d-flex.justify-content-center
+                    span#deleteTourNoti(style='color: #dd2a2a') Không thể xoá tour đang kích hoạt
+
+              .col-sm-1
+          .modal-footer
+            button.btn.btn-secondary(type="button", data-bs-dismiss="modal") Đóng
+    // Modal active tour
+    #exampleModalActiveTour.modal.fade(tabindex="-1", aria-labelledby="exampleModalLabel", aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header.d-flex.justify-content-center
+            h1#exampleModalLabel.modal-title.fs-5(style='color: #28b487') KÍCH HOẠT TOUR
+            button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
+          .modal-body
+            .row
+              .col-sm-1
+              .col-sm-10
+                
+                .row
+                  .col-sm-12.d-flex.justify-content-center
+                    label.col-form-label Bạn chắc chắc muốn kích hoạt tour? 
+                .mb-3.row 
+                  .col-sm-12.d-flex.justify-content-center
+                    input#activeTourId(style='display: none')  
+                    label#activeTourName.col-form-label(style='color: green')
+                .mb-3.row 
+                  .col-sm-12.d-flex.justify-content-center
+                    label#activeTourNoti.col-form-label(style='color: #d92626') Khi một tour được kích hoạt, điều này có nghĩa là người dùng có thể đặt tour đó. Trong khi có người dùng đặt tour, bạn sẽ không thể thay đổi thông tin của tour được nữa.
+                .mb-3.row
+                  .col-sm-4
+                  .col-sm-4.d-flex.justify-content-center
+                    button#activeTour.btn.btn-primary(type="submit") Kích hoạt
+                  .col-sm-4
+                  //- .col-sm-12.d-flex.justify-content-center
+                  //-   span#deleteTourNoti(style='color: #dd2a2a') Không thể xoá tour đang kích hoạt
+
+              .col-sm-1
+          .modal-footer
+            button.btn.btn-secondary(type="button", data-bs-dismiss="modal") Huỷ
+    
+  
   script.
     //- $(document).ready(function() {
     document.addEventListener('DOMContentLoaded', (event) => {
@@ -196,7 +269,8 @@ block content_admin
       let guideCount = 1;
 
       let countryCodeMap = {};
-      //- loadCountries()
+      //- loadCountries() k dc
+
 
       const translateBatch = async (texts, to) => {
         console.log('Received request for translation:', { texts });
@@ -246,7 +320,7 @@ block content_admin
       //- function loadCities(countryCode, selectElement, selectedLocation = null) {
       function loadCities(countryCode, selectElement, selectedLocation = null) {
         const geonameId = countryCode; // Assuming geonameId for Vietnam
-        console.log(countryCode);
+        console.log("countryCode", countryCode);
         if (countryCode === 'VN') {
           // Load provinces directly from the pug file
           const provincesContent = `
@@ -366,32 +440,45 @@ block content_admin
       $(document).on('show.bs.modal', event => {    // to keep delete button        
         
         if(event.relatedTarget.id === 'addTour') {
+          document.getElementById('modalTitle').innerHTML = 'THÊM TOUR MỚI';
+          document.getElementById('btnAddTour').style.display = 'block';
+          document.getElementById('btnSaveTour').style.display = 'none';
+          document.getElementById('editTourNoti').style.display = 'none';
+          document.getElementById('btnReviewTour').style.display = 'none';
+          document.getElementById('tourCoverImg').setAttribute('required', 'required');
+          document.getElementById('tourImg').setAttribute('required', 'required');
+
           loadCountries();  
           loadGuideOptions(document.getElementById('guides-0-id'));   // Load initial guide options into the first select element
           loadCategoryOptions(document.getElementById('categorySelect'));
         } else if(event.relatedTarget.id === 'btnShowTour') {
-            const tour = JSON.parse(event.relatedTarget.getAttribute('data-tour'))
-
-            loadCountries(function() {
-              const countrySelect = exampleModal.querySelector('#countrySelect')
-              countrySelect.value = `${tour.locations[0].country}`
-            });    
-       
+          document.getElementById('modalTitle').innerHTML = 'THÔNG TIN TOUR';
+          document.getElementById('btnAddTour').style.display = 'none';
+          document.getElementById('btnSaveTour').style.display = 'block';
+          document.getElementById('tourCoverImg').removeAttribute('required');
+          document.getElementById('tourImg').removeAttribute('required');
           
-            //- loadGuideOptions(document.getElementById('guides-0-id'));   // in addGuideSelect
-            // Xóa tất cả các HDV hiện tại
-            document.getElementById('guides-container').innerHTML = '';
-            // Thêm các HDV từ tour
-            tour.guides.forEach(guide => {
-              addGuideSelect(guide);
-            });
 
-            loadCategoryOptions(document.getElementById('categorySelect'), function() {
-              const categorySelect = exampleModal.querySelector('#categorySelect')
-              categorySelect.value = `${tour.category._id}`;
-            });
+          const tour = JSON.parse(event.relatedTarget.getAttribute('data-tour'))
+          
+          var btnReviewTour = document.getElementById('btnReviewTour');
+          btnReviewTour.style.display = 'block';
+          btnReviewTour.href = `/tour/${tour.slug}`;
+          btnReviewTour.target = "_blank";
 
-            console.log(tour.locations)
+          if(tour.active) {
+            document.getElementById('btnSaveTour').style.display = 'none';
+            document.getElementById('editTourNoti').style.display = 'block';
+          } else {
+            document.getElementById('btnSaveTour').style.display = 'block';
+            document.getElementById('editTourNoti').style.display = 'none';
+          }
+
+
+          loadCountries(function() {
+            const countrySelect = document.querySelector('#countrySelect')
+            countrySelect.value = `${tour.locations[0].country}`
+
 
             // Xóa tất cả các location hiện tại
             document.getElementById('locations-container').innerHTML = '';
@@ -400,58 +487,279 @@ block content_admin
             tour.locations.forEach(location => {
               addlocationSelect(countryCode, location);
             });
+          });    
 
-            // Xóa tất cả các location hiện tại
-            document.getElementById('itineraries-container').innerHTML = '';
+          //- loadCities(countryCodeMap[$('#countrySelect').val()], $(`#location-${locationCount -1}-id`));
+          //- loadCities(countryCodeMap[`${tour.locations[0].country}`], $('#location-0-id'));
+      
+        
+          //- loadGuideOptions(document.getElementById('guides-0-id'));   // in addGuideSelect
+          // Xóa tất cả các HDV hiện tại
+          document.getElementById('guides-container').innerHTML = '';
+          // Thêm các HDV từ tour
+          tour.guides.forEach(guide => {
+            addGuideSelect(guide);
+          });
 
-            console.log('lich trinh', tour.itineraries)
-            tour.itineraries.forEach(itinerary => {
-              additinerarySelect(itinerary);
-            });
+          loadCategoryOptions(document.getElementById('categorySelect'), function() {
+            const categorySelect = exampleModal.querySelector('#categorySelect')
+            categorySelect.value = `${tour.category._id}`;
+          });
+
+          console.log(tour.locations)
+
+          //- // Xóa tất cả các location hiện tại
+          //- document.getElementById('locations-container').innerHTML = '';
+          //- // Thêm các location từ tour
+          //- const countryCode = countryCodeMap[`${tour.locations[0].country}`]
+          //- tour.locations.forEach(location => {
+          //-   addlocationSelect(countryCode, location);
+          //- });
+
+          // Xóa tất cả các location hiện tại
+          document.getElementById('itineraries-container').innerHTML = '';
+
+          console.log('lich trinh', tour.itineraries)
+          tour.itineraries.forEach(itinerary => {
+            additinerarySelect(itinerary);
+          });
 
 
-            const exampleModal = document.getElementById('exampleModalAddTour')
+          const exampleModal = document.getElementById('exampleModalAddTour')
 
-            const tourName = exampleModal.querySelector('#tourName')
-            const tourDuration = exampleModal.querySelector('#tourDuration')
-            const maxGroupSize = exampleModal.querySelector('#maxGroupSize')
-            const tourPrice = exampleModal.querySelector('#tourPrice')
-            const tourPriceDiscount = exampleModal.querySelector('#tourPriceDiscount')
-            const tourSummary = exampleModal.querySelector('#tourSummary')
-            const tourDescription = exampleModal.querySelector('#tourDescription')
-            const tourCoverImg = exampleModal.querySelector('#tourCoverImg')
-            const tourImg = exampleModal.querySelector('#tourImg')
-            const tourStartDate = exampleModal.querySelector('#tourStartDate')
-            //- startLocation
-            const tourStartCoordinate = exampleModal.querySelector('#tourStartCoordinate')
-            const tourStartAddress = exampleModal.querySelector('#tourStartAddress')
-            const tourStartProvince = exampleModal.querySelector('#tourStartProvince')
-                       
+          const tourName = exampleModal.querySelector('#tourName')
+          const tourId = exampleModal.querySelector('#tourId')
+          const tourDuration = exampleModal.querySelector('#tourDuration')
+          const maxGroupSize = exampleModal.querySelector('#maxGroupSize')
+          const tourPrice = exampleModal.querySelector('#tourPrice')
+          const tourPriceDiscount = exampleModal.querySelector('#tourPriceDiscount')
+          const tourSummary = exampleModal.querySelector('#tourSummary')
+          const tourDescription = exampleModal.querySelector('#tourDescription')
+          const tourCoverImg = exampleModal.querySelector('#tourCoverImg')
+          const tourImg = exampleModal.querySelector('#tourImg')
+          const tourStartDate = exampleModal.querySelector('#tourStartDate')
+          //- startLocation
+          const tourStartCoordinate = exampleModal.querySelector('#tourStartCoordinate')
+          const tourStartAddress = exampleModal.querySelector('#tourStartAddress')
+          const tourStartProvince = exampleModal.querySelector('#tourStartProvince')
+                      
 
 
-            tourName.value = `${tour.name}`
-            tourDuration.value = `${tour.duration}`
-            maxGroupSize.value = `${tour.maxGroupSize}`
-            tourPrice.value = `${tour.price}`
-            tourPriceDiscount.value = `${tour.priceDiscount}`
-            tourSummary.value = `${tour.summary}`
-            tourDescription.value = `${tour.description}`
-            tourCoverImg.filename = `${tour.imageCover}`
-            tourImg.filename = `${tour.images}`
-            tourStartDate.value = `${new Date(tour.startDate)}`
-            // startLocation
-            tourStartProvince.value = `${tour.startLocation.description}`
-            tourStartAddress.value = `${tour.startLocation.address}`
-            tourStartCoordinate.value = `${tour.startLocation.coordinates}`
+          tourId.value = `${tour._id}`
+          tourName.value = `${tour.name}`
+          tourDuration.value = `${tour.duration}`
+          maxGroupSize.value = `${tour.maxGroupSize}`
+          tourPrice.value = `${tour.price}`
+          tourPriceDiscount.value = `${tour.priceDiscount}`
+          tourSummary.value = `${tour.summary}`
+          tourDescription.value = `${tour.description}` //
+          tourCoverImg.filename = `${tour.imageCover}`  //
+          tourImg.filename = `${tour.images}`
+          //- console.log("startDate", tour.startDate)
+          const date = new Date(tour.startDate);
 
+
+          //- const formattedDate = date.toISOString().split('T')[0];
+          //- tourStartDate.value = formattedDate;
+
+
+          // Định dạng ngày và giờ theo chuẩn datetime-local (YYYY-MM-DDTHH:MM)
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          const hours = String(date.getHours()).padStart(2, '0');
+          const minutes = String(date.getMinutes()).padStart(2, '0');
+
+          // Tạo chuỗi định dạng phù hợp cho datetime-local
+          const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+          tourStartDate.value = formattedDateTime;
+          //- tourStartDate.value = `${new Date(tour.startDate)}`
+          // startLocation
+          tourStartProvince.value = `${tour.startLocation.description}`
+          tourStartAddress.value = `${tour.startLocation.address}`
+          tourStartCoordinate.value = `${tour.startLocation.coordinates}`
+
+        } else if(event.relatedTarget.id === 'btnDeleteTour') {
+          const exampleModal = document.getElementById('exampleModalDeleteTour')
+          const button = event.relatedTarget
+      
+          const tour = JSON.parse(button.getAttribute('data-tour'))
+          console.log(tour._id)
+          console.log(tour.name)
+          console.log(tour.currentGroupSize)
+          
+          if(tour.active) {
+            document.getElementById('confirmDeleteTour').style.display = 'none';
+            //- document.getElementById('deleteTourName').style.display = 'none';
+            document.getElementById('deleteTour').style.display = 'none';
+            document.getElementById('deleteTourName').innerHTML = `${tour.name}`
+            document.getElementById('deleteTourNoti').style.display = 'block';
           } else {
+            document.getElementById('confirmDeleteTour').style.display = 'block';
+            //- document.getElementById('deleteTourName').style.display = 'block';
+            document.getElementById('deleteTour').style.display = 'block';
+            document.getElementById('deleteTourName').innerHTML = `${tour.name}`
+            document.getElementById('deleteTourNoti').style.display = 'none';
+
+            document.getElementById('deleteTourId').value = `${tour._id}`;
 
           }
+         
+        } 
+        //- else if(event.relatedTarget.id === 'flexSwitchCheckDefault') {
+        //-   //- console.log('switch clicked')
+        //-   //- console.log('id', event.relatedTarget.id)
+
+        //-   if(event.relatedTarget.checked == false){
+        //-     event.preventDefault(); // chan modal
+        //-     console.log('on -> off')
+        //-     //- event.relatedTarget.checked = false
+        //-   } else if(event.relatedTarget.checked == true) {
+        //-       console.log('off -> on')
+        //-       event.relatedTarget.checked = false
+        //-       document.getElementById('activeTour').addEventListener('click', confirmActivation )
+              
+        //-       function confirmActivation() {
+        //-         event.relatedTarget.checked = true  
+
+        //-         const tour = JSON.parse(event.relatedTarget.getAttribute('data-tour'))
+                
+        //-         console.log(tour.name)                    
+        //-         $('#exampleModalActiveTour').modal('hide');
+
+        //-         document.getElementById('activeTour').removeEventListener('click', confirmActivation);
+        //-       }
+
+        //-       //- $('#exampleModalActiveTour').one('click', '#activeTour', confirmActivation);
+                
+        //-       //- $('#exampleModalActiveTour').one('hidden.bs.modal', function () {
+        //-         //- document.getElementById('activeTour').removeEventListener('click', confirmActivation);
+        //-         // Gỡ bỏ sự kiện hidden.bs.modal sau khi modal đã đóng
+        //-         //- console.log('hide modal')
+        //-         //- $('#exampleModalActiveTour').off('hidden.bs.modal');
+        //-       //- });
+              
+
+
+        //-       //- event.relatedTarget.addEventListener('click', function (event) {
+        //-       //-   //- if (this.checked) {
+        //-       //-     console.log('has check')
+        //-       //-     event.preventDefault(); // Ngăn chặn checkbox được checked ngay lập tức
+                  
+        //-       //-     const currentCheckbox = this;
+                  
+        //-       //-     //- document.getElementById('activeTour').addEventListener('click', confirmActivation )
+                  
+        //-       //-     function confirmActivation() {
+        //-       //-       currentCheckbox.checked = true;  
+        //-       //-       console.log('switch on')
+        //-       //-       const tour = JSON.parse(currentCheckbox.getAttribute('data-tour'))
+        //-       //-       //- console.log(tour._id);
+        //-       //-       //- console.log(tour.name);
+        //-       //-       //- console.log('1')                    
+        //-       //-       $('#exampleModalActiveTour').modal('hide');
+        //-       //-     }
+                  
+        //-       //-     $('#exampleModalActiveTour').one('click', '#activeTour', confirmActivation);
+                    
+        //-       //-     $('#exampleModalActiveTour').on('hidden.bs.modal', function () {
+        //-       //-       //- document.getElementById('activeTour').removeEventListener('click', confirmActivation);
+        //-       //-       // Gỡ bỏ sự kiện hidden.bs.modal sau khi modal đã đóng
+        //-       //-       console.log('hide modal')
+        //-       //-       $('#exampleModalActiveTour').off('hidden.bs.modal');
+        //-       //-     });
+        //-       //-   //- }
+        //-       //- })
+        //-     }
+        //- }
+        else if (event.relatedTarget.id === 'flexSwitchCheckDefault') {
+          const checkbox = event.relatedTarget;
+          
+          if (checkbox.checked === false) {
+            event.preventDefault();
+            //- console.log('on -> off');
+            const tour = JSON.parse(checkbox.getAttribute('data-tour'));
+            console.log(tour.currentGroupSize)
+            if(tour.currentGroupSize > 0) {
+              checkbox.checked = true;
+            } else {
+              $.ajax({
+                url: '/api/v1/tours/update-tour-status', 
+                method: 'PATCH',
+                contentType: 'application/json', 
+                data: JSON.stringify({
+                  id: tour._id,
+                  active: false
+                }),
+                success: function(response) {
+                  checkbox.checked = false;
+                  console.log('Tour updated:', response);
+
+                  const page = $('.page-link').data('page');
+                  const rowsPerTourPage = $('.rowsPerTourPage').val();
+                  const searchQuery = $('#searchTour').val();
+                  updateTableAndPagination(page + 1, rowsPerTourPage, searchQuery); 
+    
+                },
+                error: function(xhr, status, error) {
+                  console.error('Failed to update tour:', error);
+                }
+              });
+            }
+          } else if (checkbox.checked === true) {
+            // Ngăn checkbox thay đổi trạng thái ngay lập tức
+            checkbox.checked = false;
+
+            const tour = JSON.parse(checkbox.getAttribute('data-tour'));
+            document.getElementById('activeTourName').innerHTML = `${tour.name}`
+            
+            $('#activeTour').off('click');
+            // Lắng nghe sự kiện click của nút xác nhận trong modal
+            $('#activeTour').on('click', function confirmActivation() {
+              //- checkbox.checked = true;
+              console.log('off -> on');
+            
+              console.log(tour._id);
+              $.ajax({
+                url: '/api/v1/tours/update-tour-status', 
+                method: 'PATCH',
+                contentType: 'application/json', // Đảm bảo gửi dữ liệu dưới dạng JSON
+                data: JSON.stringify({
+                  id: tour._id,
+                  active: true
+                }),
+                success: function(response) {
+                  checkbox.checked = true;
+                  
+                  console.log('Tour updated:', response);
+
+                  const page = $('.page-link').data('page');
+                  const rowsPerTourPage = $('.rowsPerTourPage').val();
+                  const searchQuery = $('#searchTour').val();
+                  updateTableAndPagination(page + 1, rowsPerTourPage, searchQuery); 
+      
+                  // Ẩn modal
+                  $('#exampleModalActiveTour').modal('hide');
+                },
+                error: function(xhr, status, error) {
+                  console.error('Failed to update tour:', error);
+                }
+              });
+
+              // Ẩn modal và ngừng lắng nghe sự kiện click
+              //- $('#exampleModalActiveTour').modal('hide');
+            });
+          }
+        }
       });
+
+     
+
 
       ///////////////////////////////////////////////
       
       function loadCategoryOptions(selectElement, callback) {
+        //- selectElement.innerHTML = "";  // ^^
         selectElement.innerHTML = "";  // ^^
         $.ajax({
           url: '/api/v1/categories',
@@ -486,7 +794,7 @@ block content_admin
               const option = document.createElement('option');
               option.value = guide._id;
               option.textContent = guide.name;
-              selectElement.append(option);
+              $(selectElement).append(option);
             });
 
             // Chọn HDV đã chọn trước đó nếu có
@@ -873,6 +1181,56 @@ block content_admin
       })
 
       ///////////////////
+      //- $(document).on('hidden.bs.modal', event => {
+      //-   const exampleForm = document.querySelector('.form--add-tour');
+      //-   console.log("modal close")
+      //-   exampleForm.reset();
+
+        //- const forms = document.querySelectorAll('.needs-validation')
+        //- Array.from(forms).forEach(form => {  
+        //-   form.classList.remove('was-validated');
+        //- })
+      //- });
+
+      $(document).on('hidden.bs.modal', event => {
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {  
+          form.classList.remove('was-validated');
+        })
+        
+        ///////////////////////////// reset form
+
+        const exampleForm = document.querySelector('.form--add-tour');
+        // Reset static form fields
+        exampleForm.reset();
+
+        // Remove dynamically added location fields
+        const locationsContainer = document.getElementById('locations-container');
+        while (locationsContainer.children.length > 1) {
+          locationsContainer.removeChild(locationsContainer.lastChild);
+        }
+
+        // Remove dynamically added guide fields
+        const guidesContainer = document.getElementById('guides-container');
+        while (guidesContainer.children.length > 1) {
+          guidesContainer.removeChild(guidesContainer.lastChild);
+        }
+
+        // Remove dynamically added itinerary fields
+        const itinerariesContainer = document.getElementById('itineraries-container');
+        while (itinerariesContainer.children.length > 1) {
+          itinerariesContainer.removeChild(itinerariesContainer.lastChild);
+        }
+
+        document.getElementById('itinerary-0-id').value = "";
+        document.getElementById('itinerary-0-coordinates').value = "";
+        document.getElementById('itinerary-0-description').value = "";
+   
+        itineraryCount = 1;
+        locationCount = 1;
+        guideCount = 1;
+      });
+
       
     
       
