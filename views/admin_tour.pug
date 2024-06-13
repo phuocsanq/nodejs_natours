@@ -395,7 +395,8 @@ block content_admin
         } else {
           // Make AJAX call to fetch cities from API
           $.ajax({
-            url: `http://api.geonames.org/searchJSON?country=${geonameId}&maxRows=100&username=sang&featureCode=ADM1`,
+            //- url: `https://api.geonames.org/searchJSON?country=${geonameId}&maxRows=100&username=sang&featureCode=ADM1`,
+            url: `/proxy/geonames?country=${geonameId}&maxRows=100&username=sang&featureCode=ADM1`,
             method: 'GET',
             success: async function(data) {
               console.log("load city")

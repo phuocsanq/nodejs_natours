@@ -129,6 +129,26 @@ app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/bookings', bookingRouter);
 app.use('/api/v1/categories', categoryRouter);
 app.use('/api/v1/locations', locationRouter);
+//////////
+app.get('/proxy/geonames', (req, res) => {
+    const { country, maxRows, username, featureCode } = req.query;
+    const options = {
+        hostname: 'api.geonames.org',
+        path: `/searchJSON?country=${country}&maxRows=${maxRows}&username=${username}&featureCode=${featureCode}`,
+        method: 'GET'
+    };
+
+    http.request(options, (apiRes) => {
+        let data = '';
+        apiRes.on('data', (chunk) => {
+        data += chunk;
+        });
+        apiRes.on('end', () => {
+        res.send(data);
+        });
+    }).end();
+});
+/////////
 
 app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
