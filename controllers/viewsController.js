@@ -420,6 +420,7 @@ exports.getMyBills = catchAsync(async (req, res, next) => {
     }
 });
 
+
 exports.getSearchTourForm = catchAsync(async (req, res, next) => {
     const type = req.query.type;
     const category = req.query.category;
@@ -922,6 +923,54 @@ exports.getAdminTourPage = catchAsync(async (req, res) => {
             tours,
             pagination,
             currentPath: '/admin/tour'
+        });
+    }
+});
+
+exports.getAdminBookingPage = catchAsync(async (req, res, next) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.rowsPerPage) || 10;
+    const skip = (page - 1) * limit;
+
+    // let query = {};
+
+    const [bookings, totalBookings] = await Promise.all([
+        Booking.find().populate('tourVersion').populate('user').skip(skip).limit(limit),
+        Booking.countDocuments()
+    ]);
+
+    const totalPages = Math.ceil(totalBookings / limit);
+
+    const pagination = {
+        rowsPerPage: limit,
+        currentPage: page,
+        totalPages: totalPages,
+        pages: Array.from({ length: totalPages }, (v, k) => k + 1)
+    };
+    
+    const objects = bookings.map(el => {
+        return {
+            id: el.id,
+            tour: el.tourVersion.versions[el.version],
+            user: el.user,
+            quantity: el.quantity,
+            createdAt: el.createdAt,
+            active: el.active
+        }
+    });
+
+    if(req.query.page && req.query.rowsPerPage) {
+        res.status(200).json({
+            bookingTableHtml: res.locals.pug.renderFile(path.resolve(__dirname, '../', 'views', 'partials', 'bookingTable.pug'), { objects, pagination }),
+            paginationHtml: res.locals.pug.renderFile(path.resolve(__dirname, '../', 'views', 'partials', 'pagination.pug'), { pagination })
+        });
+    }
+    else {
+        res.status(200).render('admin_booking', {
+            title: 'Manager bookings',
+            objects,
+            pagination,
+            currentPath: '/admin/booking'
         });
     }
 });

@@ -24,5 +24,6 @@ router.get('/admin', authController.isLoggedIn, authController.restrictTo('admin
 router.get('/admin/user', authController.isLoggedIn, authController.restrictTo('admin'), viewsController.getAdminUserPage);
 router.get('/admin/guide', authController.isLoggedIn, authController.restrictTo('admin'), viewsController.getAdminGuidePage);
 router.get('/admin/tour', authController.isLoggedIn, authController.restrictTo('admin'), viewsController.getAdminTourPage);
+router.get('/admin/booking', authController.isLoggedIn, authController.restrictTo('admin'), viewsController.getAdminBookingPage);
 
 module.exports = router;
