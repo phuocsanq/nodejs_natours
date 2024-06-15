@@ -7,6 +7,7 @@ table.table
       th(scope="col") Tên
       th(scope="col") Ngày khởi hành
       th(scope="col") Danh mục
+      th(scope="col") Trạng thái
       th(scope="col") Booking
       th(scope="col") Giá (₫)
       th(scope="col") Giảm (%)
@@ -19,6 +20,18 @@ table.table
         td= `${tour.name}`
         td= `${tour.startDate.toLocaleString('vi', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'})}`
         td= `${tour.category.name}`
+        - if(tour.active) 
+          - const currentDate = new Date().getTime()
+          - const startDate = new Date(tour.startDate).getTime()
+          - const endDate = startDate + (tour.duration - 1) * 24 * 60 * 60 * 1000
+          - if(currentDate < startDate)
+            td(style='color: #00d200')= `Đang bán`
+          - else if(currentDate <= endDate)
+            td(style='color: #0d6efd')= `Đang diễn ra`
+          - else 
+            td(style='color: #d91b1b')= `Đã kết thúc`
+        - else 
+          td(style='color: #9a9a9a')= `Chưa kích hoạt`
         - if(tour.currentGroupSize === tour.maxGroupSize)
           td(style='color: #00d200')= `${tour.currentGroupSize}/${tour.maxGroupSize}`
         - else

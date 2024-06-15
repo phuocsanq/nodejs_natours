@@ -4,11 +4,13 @@ const Tour = require('../models/tourModel');
 const Booking = require('../models/bookingModel');
 const Location = require('../models/locationModel');
 const Category = require('../models/categoryModel');
+const Review = require('../models/reviewModel');
 const mongoose = require('mongoose');
 const TourVersion = mongoose.model('tour_versions');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const path = require('path');
+const ObjectId = mongoose.Types.ObjectId;
 // const Email = require('../utils/email');
 
 
@@ -273,13 +275,35 @@ exports.getAdminForm = (req, res) => {
         title: 'Manager'
     });
 }
+exports.getReviewForm = async (req, res) => {
+    const {userId, tourId, bookingId} = req.params;
+    console.log(userId, tourId)
 
-// exports.getAdminTourForm = (req, res) => {
-//     res.status(200).render('admin_tour', {
-//         title: 'Manager tours',
-//         currentPath: '/admin/tour'
-//     });
-// }
+    let booking = null;
+    if (mongoose.Types.ObjectId.isValid(bookingId)) {
+        booking = await Booking.findById(bookingId);
+    }
+
+    const tourVersion = await TourVersion.find({ refId: tourId });
+
+    const [bookingCount, reviewCount] = await Promise.all([
+        Booking.countDocuments({ user: userId, tourVersion: tourVersion}),
+        Review.countDocuments({ user: userId, tour: tourId })
+    ])
+
+    console.log('-------', bookingCount, reviewCount)
+
+    res.status(200).render('review', {
+        title: 'Review',
+        userId,
+        tourId,
+        booking,
+        bookingCount,
+        reviewCount
+    });
+}
+
+
 
 // NO USE
 exports.getAdminUserForm = catchAsync(async (req, res) => {
@@ -779,23 +803,24 @@ exports.getAdminUserPage = catchAsync(async (req, res) => {
     query.role = { $eq: 'user' };
     console.log(query);
 
-    const totalUsers = await User.countDocuments(query);
-
-    const usersWithBookings = await User.aggregate([
-        { $match: query },
-        { $skip: skip },
-        { $limit: limit },
-        {
-            $lookup: {
-                from: 'bookings', // the name of the bookings collection
-                let: { userId: '$_id' },
-                pipeline: [
-                    { $match: { $expr: { $and: [{ $eq: ['$user', '$$userId'] }, { $eq: ['$active', true] }] } } }
-                ],
-                as: 'bookings'
+    const [totalUsers, usersWithBookings] = await Promise.all([ 
+        User.countDocuments(query),
+        User.aggregate([
+            { $match: query },
+            { $skip: skip },
+            { $limit: limit },
+            {
+                $lookup: {
+                    from: 'bookings', // the name of the bookings collection
+                    let: { userId: '$_id' },
+                    pipeline: [
+                        { $match: { $expr: { $and: [{ $eq: ['$user', '$$userId'] }, { $eq: ['$active', true] }] } } }
+                    ],
+                    as: 'bookings'
+                }
             }
-        }
-    ]);
+        ])
+    ])
 
     const totalPages = Math.ceil(totalUsers / limit);
 
@@ -839,23 +864,25 @@ exports.getAdminGuidePage = catchAsync(async (req, res) => {
     query.active = true; // for countDocuments
     query.role = { $eq: 'guide' };
 
-    const totalUsers = await User.countDocuments(query);
-
-    const usersWithTours = await User.aggregate([
-        { $match: query },
-        { $skip: skip },
-        { $limit: limit },
-        {
-            $lookup: {
-                from: 'tours', // the name of the tours collection
-                let: { userId: '$_id' },
-                pipeline: [
-                    { $match: { $expr: { $in: ['$$userId', '$guides'] } } }
-                ],
-                as: 'tours'
+    const [totalUsers, usersWithTours] = await Promise.all([ 
+        User.countDocuments(query),
+        User.aggregate([
+            { $match: query },
+            { $skip: skip },
+            { $limit: limit },
+            {
+                $lookup: {
+                    from: 'tours', // the name of the tours collection
+                    let: { userId: '$_id' },
+                    pipeline: [
+                        { $match: { $expr: { $in: ['$$userId', '$guides'] } } }
+                    ],
+                    as: 'tours'
+                }
             }
-        }
+        ])
     ]);
+
 
     const totalPages = Math.ceil(totalUsers / limit);
 
@@ -896,12 +923,16 @@ exports.getAdminTourPage = catchAsync(async (req, res) => {
         };
     }
 
+    const [tours, totalTours] = await Promise.all([
+        Tour.find(query).populate('category').populate('locations').skip(skip).limit(limit),
+        Tour.countDocuments(query)
+    ]);
 
-    const totalTours = await Tour.countDocuments(query);
+    // const totalTours = await Tour.countDocuments(query);
 
-    const tours = await Tour.find(query).populate('category').populate('locations')
-        .skip(skip)
-        .limit(limit);
+    // const tours = await Tour.find(query).populate('category').populate('locations')
+    //     .skip(skip)
+    //     .limit(limit);
 
     const totalPages = Math.ceil(totalTours / limit);
 
@@ -927,16 +958,226 @@ exports.getAdminTourPage = catchAsync(async (req, res) => {
     }
 });
 
+// exports.getAdminBookingPage = catchAsync(async (req, res, next) => {
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.rowsPerPage) || 10;
+//     const skip = (page - 1) * limit;
+
+//     let query = {};
+//     if (req.query.search && req.query.search.trim() !== '') {
+//         console.log('///',req.query.search)
+//         query = {
+//             // $or: [
+//                  'user.name': { $regex: req.query.search.trim(), $options: 'i' } 
+//                 // { description: { $regex: req.query.search.trim(), $options: 'i' } }
+//             // ]
+//         };
+//     }
+
+//     const [bookings, totalBookings] = await Promise.all([
+//         Booking.find(query).populate('tourVersion').populate('user').skip(skip).limit(limit),
+//         Booking.countDocuments(query)
+//     ]);
+
+//     const totalPages = Math.ceil(totalBookings / limit);
+
+//     const pagination = {
+//         rowsPerPage: limit,
+//         currentPage: page,
+//         totalPages: totalPages,
+//         pages: Array.from({ length: totalPages }, (v, k) => k + 1)
+//     };
+    
+//     const objects = bookings.map(el => {
+//         return {
+//             id: el.id,
+//             tour: el.tourVersion.versions[el.version],
+//             user: el.user,
+//             quantity: el.quantity,
+//             createdAt: el.createdAt,
+//             active: el.active
+//         }
+//     });
+
+//     if(req.query.page && req.query.rowsPerPage) {
+//         res.status(200).json({
+//             bookingTableHtml: res.locals.pug.renderFile(path.resolve(__dirname, '../', 'views', 'partials', 'bookingTable.pug'), { objects, pagination }),
+//             paginationHtml: res.locals.pug.renderFile(path.resolve(__dirname, '../', 'views', 'partials', 'pagination.pug'), { pagination })
+//         });
+//     }
+//     else {
+//         res.status(200).render('admin_booking', {
+//             title: 'Manager bookings',
+//             objects,
+//             pagination,
+//             currentPath: '/admin/booking'
+//         });
+//     }
+// });
+
+// exports.getAdminBookingPage = catchAsync(async (req, res, next) => {
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.rowsPerPage) || 10;
+//     const skip = (page - 1) * limit;
+
+//     let query = {};
+//     if (req.query.search && req.query.search.trim() !== '') {
+//         console.log('Search Query:', req.query.search);
+//         query = {
+//             'user.name': { $regex: req.query.search.trim(), $options: 'i' } 
+//             // 'user.name': { $regex: new RegExp(req.query.search.trim(), 'i') }
+//         };
+//     }
+
+//     const [bookings, totalBookings] = await Promise.all([
+//         Booking.find(query).populate('tourVersion').populate('user').skip(skip).limit(limit),
+//         Booking.countDocuments(query)
+//     ]);
+
+//     console.log('booking', bookings)
+
+//     const totalPages = Math.ceil(totalBookings / limit);
+
+//     const pagination = {
+//         rowsPerPage: limit,
+//         currentPage: page,
+//         totalPages: totalPages,
+//         pages: Array.from({ length: totalPages }, (v, k) => k + 1)
+//     };
+    
+//     const objects = bookings.map(el => {
+//         return {
+//             id: el.id,
+//             tour: el.tourVersion.versions[el.version],
+//             user: el.user,
+//             quantity: el.quantity,
+//             createdAt: el.createdAt,
+//             active: el.active
+//         }
+//     });
+
+//     if(req.query.page && req.query.rowsPerPage) {
+//         res.status(200).json({
+//             bookingTableHtml: res.locals.pug.renderFile(path.resolve(__dirname, '../', 'views', 'partials', 'bookingTable.pug'), { objects, pagination }),
+//             paginationHtml: res.locals.pug.renderFile(path.resolve(__dirname, '../', 'views', 'partials', 'pagination.pug'), { pagination })
+//         });
+//     }
+//     else {
+//         res.status(200).render('admin_booking', {
+//             title: 'Manager bookings',
+//             objects,
+//             pagination,
+//             currentPath: '/admin/booking'
+//         });
+//     }
+// });
+
+
+// exports.getAdminBookingPage = catchAsync(async (req, res, next) => {
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.rowsPerPage) || 10;
+//     const skip = (page - 1) * limit;
+
+//     let userQuery = {};
+//     if (req.query.search && req.query.search.trim() !== '') {
+//         userQuery = {
+//             $or: [
+//                 { name: { $regex: req.query.search.trim(), $options: 'i' } },
+//                 { email: { $regex: req.query.search.trim(), $options: 'i' } }
+//             ]
+//         };
+//     }
+
+//     // Find matching users based on the search query
+//     const matchingUsers = await User.find(userQuery, '_id').lean();
+//     const matchingUserIds = matchingUsers.map(user => user._id);
+
+//     let bookingQuery = {};
+//     if (matchingUserIds.length > 0) {
+//         bookingQuery = { user: { $in: matchingUserIds } };
+//     }
+
+//     const [bookings, totalBookings] = await Promise.all([
+//         Booking.find(bookingQuery).populate('tourVersion').populate('user').skip(skip).limit(limit).lean(),
+//         Booking.countDocuments(bookingQuery)
+//     ]);
+
+//     const totalPages = Math.ceil(totalBookings / limit);
+
+//     const pagination = {
+//         rowsPerPage: limit,
+//         currentPage: page,
+//         totalPages: totalPages,
+//         pages: Array.from({ length: totalPages }, (v, k) => k + 1)
+//     };
+    
+//     const objects = bookings.map(el => {
+//         return {
+//             id: el._id,
+//             tour: el.tourVersion.versions[el.version],
+//             user: el.user,
+//             quantity: el.quantity,
+//             createdAt: el.createdAt,
+//             active: el.active
+//         };
+//     });
+
+//     if (req.query.page && req.query.rowsPerPage) {
+//         res.status(200).json({
+//             bookingTableHtml: res.locals.pug.renderFile(path.resolve(__dirname, '../', 'views', 'partials', 'bookingTable.pug'), { objects, pagination }),
+//             paginationHtml: res.locals.pug.renderFile(path.resolve(__dirname, '../', 'views', 'partials', 'pagination.pug'), { pagination })
+//         });
+//     } else {
+//         res.status(200).render('admin_booking', {
+//             title: 'Manager bookings',
+//             objects,
+//             pagination,
+//             currentPath: '/admin/booking'
+//         });
+//     }
+// });
+
+
 exports.getAdminBookingPage = catchAsync(async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.rowsPerPage) || 10;
     const skip = (page - 1) * limit;
 
-    // let query = {};
+    let bookingQuery = {};
+    let userQuery = {};
+
+    if (req.query.search && req.query.search.trim() !== '') {
+        const search = req.query.search.trim();
+        let isObjectId = ObjectId.isValid(search);
+
+        // query cho user
+        userQuery = {
+            $or: [
+                { name: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } }
+            ]
+        };
+
+        // Tìm kiếm user khớp với điều kiện
+        const matchingUsers = await User.find(userQuery, '_id').lean();
+        const matchingUserIds = matchingUsers.map(user => user._id);
+
+        // Xây dựng query cho booking
+        bookingQuery = {
+            $or: [
+                { user: { $in: matchingUserIds } }
+            ]
+        };
+
+        // Nếu search là ObjectId hợp lệ, thêm vào điều kiện tìm kiếm booking theo ID
+        if (isObjectId) {
+            bookingQuery.$or.push({ _id: new ObjectId(search) });
+        }
+    }
 
     const [bookings, totalBookings] = await Promise.all([
-        Booking.find().populate('tourVersion').populate('user').skip(skip).limit(limit),
-        Booking.countDocuments()
+        Booking.find(bookingQuery).populate('tourVersion').populate('user').skip(skip).limit(limit).lean(),
+        Booking.countDocuments(bookingQuery)
     ]);
 
     const totalPages = Math.ceil(totalBookings / limit);
@@ -947,30 +1188,136 @@ exports.getAdminBookingPage = catchAsync(async (req, res, next) => {
         totalPages: totalPages,
         pages: Array.from({ length: totalPages }, (v, k) => k + 1)
     };
-    
+
     const objects = bookings.map(el => {
         return {
-            id: el.id,
+            id: el._id,
             tour: el.tourVersion.versions[el.version],
             user: el.user,
             quantity: el.quantity,
             createdAt: el.createdAt,
             active: el.active
-        }
+        };
     });
 
-    if(req.query.page && req.query.rowsPerPage) {
+    if (req.query.page && req.query.rowsPerPage) {
         res.status(200).json({
             bookingTableHtml: res.locals.pug.renderFile(path.resolve(__dirname, '../', 'views', 'partials', 'bookingTable.pug'), { objects, pagination }),
             paginationHtml: res.locals.pug.renderFile(path.resolve(__dirname, '../', 'views', 'partials', 'pagination.pug'), { pagination })
         });
-    }
-    else {
+    } else {
         res.status(200).render('admin_booking', {
             title: 'Manager bookings',
             objects,
             pagination,
             currentPath: '/admin/booking'
+        });
+    }
+});
+
+
+// exports.getAdminReviewPage = catchAsync(async (req, res) => {
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.rowsPerPage) || 10;
+//     const skip = (page - 1) * limit;
+
+//     let query = {};
+//     if (req.query.search && req.query.search.trim() !== '') {
+//         const searchRegex = { $regex: req.query.search.trim(), $options: 'i' };
+//         query = {
+//             $or: [
+//                 { 'user.name': searchRegex },
+//                 { 'user.email': searchRegex },
+//                 { 'tour.name': searchRegex }
+//             ]
+//         };
+//     }
+
+//     const [reviews, totalReviews] = await Promise.all([
+//         Review.find(query)
+//             .populate('user')
+//             .populate('tour')
+//             .skip(skip)
+//             .limit(limit),
+//         Review.countDocuments(query)
+//     ]);
+//     console.log(reviews)
+
+//     const totalPages = Math.ceil(totalReviews / limit);
+
+//     const pagination = {
+//         rowsPerPage: limit,
+//         currentPage: page,
+//         totalPages: totalPages,
+//         pages: Array.from({ length: totalPages }, (v, k) => k + 1)
+//     };
+
+//     if (req.query.page && req.query.rowsPerPage) {
+//         res.status(200).json({
+//             reviewTableHtml: res.locals.pug.renderFile(path.resolve(__dirname, '../', 'views', 'partials', 'reviewTable.pug'), { reviews, pagination }),
+//             paginationHtml: res.locals.pug.renderFile(path.resolve(__dirname, '../', 'views', 'partials', 'pagination.pug'), { pagination })
+//         });
+//     } else {
+//         res.status(200).render('admin_review', {
+//             title: 'Manage Reviews',
+//             reviews,
+//             pagination,
+//             currentPath: '/admin/review'
+//         });
+//     }
+// });
+
+exports.getAdminReviewPage = catchAsync(async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.rowsPerPage) || 10;
+    const skip = (page - 1) * limit;
+
+    let query = {};
+    if (req.query.search && req.query.search.trim() !== '') {
+        const searchRegex = { $regex: req.query.search.trim(), $options: 'i' };
+        const users = await User.find({ $or: [{ name: searchRegex }, { email: searchRegex }] }).select('_id');
+        const tours = await Tour.find({ name: searchRegex }).select('_id');
+
+        const userIds = users.map(user => user._id);
+        const tourIds = tours.map(tour => tour._id);
+
+        query = {
+            $or: [
+                { user: { $in: userIds } },
+                { tour: { $in: tourIds } }
+            ]
+        };
+    }
+
+    const [reviews, totalReviews] = await Promise.all([
+        Review.find(query)
+            .populate('user')
+            .populate('tour')
+            .skip(skip)
+            .limit(limit),
+        Review.countDocuments(query)
+    ]);
+
+    const totalPages = Math.ceil(totalReviews / limit);
+
+    const pagination = {
+        rowsPerPage: limit,
+        currentPage: page,
+        totalPages: totalPages,
+        pages: Array.from({ length: totalPages }, (v, k) => k + 1)
+    };
+
+    if (req.query.page && req.query.rowsPerPage) {
+        res.status(200).json({
+            reviewTableHtml: res.locals.pug.renderFile(path.resolve(__dirname, '../', 'views', 'partials', 'reviewTable.pug'), { reviews, pagination }),
+            paginationHtml: res.locals.pug.renderFile(path.resolve(__dirname, '../', 'views', 'partials', 'pagination.pug'), { pagination })
+        });
+    } else {
+        res.status(200).render('admin_review', {
+            title: 'Manage Reviews',
+            reviews,
+            pagination,
+            currentPath: '/admin/review'
         });
     }
 });

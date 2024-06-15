@@ -55,6 +55,8 @@ const bookingSchema = new mongoose.Schema({
 //     });
 //     next();
 // });
+bookingSchema.index({ user: 1 });
+bookingSchema.index({ tourVersion: 1 });
 
 const Booking = mongoose.model('Booking', bookingSchema);
 

@@ -10,7 +10,7 @@ block content_admin
       .container-fluid.mt-5
         .form-add-user.d-flex.gap-5
           form.d-flex(role="search")
-            input#searchGuide.form-control.me-2(style='font-size: 12px', type="search", placeholder="Tìm kiếm ...", aria-label="Search")
+            input#searchBooking.form-control.me-2(style='font-size: 12px', type="search", placeholder="Tìm kiếm ...", aria-label="Search")
           //- button#addGuide.btn.btn-success(type="button", data-bs-toggle="modal", data-bs-target="#exampleModalAddGuide", data-user=user) Thêm HDV
 
     .d-flex.flex-column.align-items-start.mt-4
@@ -27,70 +27,172 @@ block content_admin
 
     #paginationWrapper
       include partials/pagination
-    
-  //- script.
-  //-   $(document).ready(function() {
-  //-     function updateTableAndPagination(page, rowsPerBookingPage, searchQuery) {
-  //-       $.get('/admin/guide', { page: page, rowsPerPage: rowsPerBookingPage, search: searchQuery }, function(data) {
-  //-         $('#bookingTable').html(data.bookingTableHtml);
-  //-         $('#paginationWrapper').html(data.paginationHtml);
-  //-       });
-  //-     }
+
+    #exampleModalBookingDetails.modal.fade(tabindex="-1", aria-labelledby="exampleModalLabel", aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header.d-flex.justify-content-center
+            h1#exampleModalLabel.modal-title.fs-5(style='color: #28b487') THÔNG TIN CHI TIẾT BOOKING
+            button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
+          .modal-body
+            form.row.g-3.mt-3
+              .col-sm-1
+              .col-sm-10
+                .mb-2.row
+                  label.col-sm-4.col-form-label(for="staticId") ID khách hàng
+                  .col-sm-8
+                    input#bookingUserId.form-control-plaintext(type="text", readonly, value="")
+                .mb-2.row
+                  label.col-sm-4.col-form-label(for="staticName") Tên khách hàng
+                  .col-sm-8
+                    input#bookingUserName.form-control-plaintext(style='font-size: 12px', type="text", readonly, value="")                   
+                .mb-2.row
+                  label.col-sm-4.col-form-label(for="staticEmail") Email khách hàng
+                  .col-sm-8
+                    input#bookingUserEmail.form-control-plaintext(type="text", readonly, value="")
+              .col-sm-1
+
+          .modal-footer
+        
+          .modal-body
+            form.row.g-3.needs-validation(novalidate)
+              .col-sm-1
+              .col-sm-10
+                .mb-2.row
+                  label.col-sm-4.col-form-label(for="staticEmail") Tour ID
+                  .col-sm-8
+                    input#bookingTourId.form-control-plaintext(type="text", readonly, value="")
+                .mb-2.row
+                  label.col-sm-4.col-form-label(for="staticEmail") Tên tour
+                  .col-sm-8
+                    input#bookingTourName.form-control-plaintext(type="text", readonly, value="")
+                .mb-2.row
+                  label.col-sm-4.col-form-label(for="staticEmail") Ngày khởi hành
+                  .col-sm-8
+                    input#bookingTourStartDate.form-control-plaintext(type="text", readonly, value="")
+                .mb-2.row
+                  label.col-sm-4.col-form-label(for="staticEmail") Thời lượng tour
+                  .col-sm-8
+                    input#bookingTourDuration.form-control-plaintext(type="text", readonly, value="")
+                .mb-2.row
+                  label.col-sm-4.col-form-label(for="staticEmail") Giá
+                  .col-sm-8
+                    input#bookingTourPrice.form-control-plaintext(type="text", readonly, value="")
+                .mb-2.row
+                  label.col-sm-4.col-form-label(for="staticEmail") Giảm giá
+                  .col-sm-8
+                    input#bookingTourPriceDiscount.form-control-plaintext(type="text", readonly, value="")
+                .mb-2.row
+                  label.col-sm-4.col-form-label(for="staticEmail") Số lượng (người)
+                  .col-sm-8
+                    input#bookingTourQuantity.form-control-plaintext(type="text", readonly, value="")
+                .mb-2.row
+                  label.col-sm-4.col-form-label(for="staticEmail") Tổng thanh toán
+                  .col-sm-8
+                    input#bookingTourPayment.form-control-plaintext(type="text", readonly, value="")
+                .mb-2.row
+                  label.col-sm-4.col-form-label(for="staticEmail") Ngày đặt tour
+                  .col-sm-8
+                    input#bookingTourDate.form-control-plaintext(type="text", readonly, value="")
+                .mb-4.row
+                  label.col-sm-4.col-form-label(for="staticEmail") Trạng thái tour
+                  .col-sm-8
+                    input#bookingTourStatus.form-control-plaintext(type="text", readonly, value="")
       
-  //-     $(document).on('click', '.page-link', function(e) {
-  //-       e.preventDefault();
-  //-       const page = $(this).data('page');
-  //-       const rowsPerBookingPage = $('.rowsPerBookingPage').val();
-  //-       window.scrollTo({
-  //-         top: 0,
-  //-         behavior: 'smooth' 
-  //-       });
-  //-       const searchQuery = $('#searchGuide').val();
-  //-       updateTableAndPagination(page, rowsPerBookingPage, searchQuery);
-  //-     });
+                .mb-2.row
+                  .col-sm-4
+                  .col-sm-4.d-flex.justify-content-center
+                    a#btnReviewTour.btn.btn-info
+                      svg#i-eye(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 30 30", width="14", height="14", fill="none", stroke="currentcolor", stroke-linecap="round", stroke-linejoin="round", stroke-width="2")
+                        circle(cx="17", cy="15", r="1")
+                        circle(cx="16", cy="16", r="6")
+                        path(d="M2 16 C2 16 7 6 16 6 25 6 30 16 30 16 30 16 25 26 16 26 7 26 2 16 2 16 Z")
+                      | &nbsp
+                      span Xem tour
+                  .col-sm-4
+              .col-sm-1
+          .modal-footer
+            button.btn.btn-secondary(type="button", data-bs-dismiss="modal") Đóng
 
-  //-     $('.rowsPerBookingPage').on('change', function() {
-  //-       const rowsPerBookingPage = $(this).val();
-  //-       const searchQuery = $('#searchGuide').val();
-  //-       updateTableAndPagination(1, rowsPerBookingPage, searchQuery); 
-  //-     });
+    #exampleModalDeleteBooking.modal.fade(tabindex="-1", aria-labelledby="exampleModalLabel", aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header.d-flex.justify-content-center
+            h1#exampleModalLabel.modal-title.fs-5(style='color: #28b487') XOÁ BOOKING
+            button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
+          .modal-body
+            .row
+              .col-sm-1
+              .col-sm-10
+                .row
+                  .col-sm-12.d-flex.justify-content-center
+                    label#confirmDeleteBooking1.col-form-label Bạn có chắc chắn muốn xoá booking này?
+                .row
+                  .col-sm-12.d-flex.justify-content-center
+                    label#confirmDeleteBooking2.col-form-label Hành động này sẽ xoá booking và không thể hoàn tác. Xoá booking sẽ ảnh hưởng đến thông tin liên quan đến tour và khách hàng.
+                .mb-3.row 
+                  .col-sm-12.d-flex.justify-content-center
+                    label#deleteBookingId.col-form-label(style='color: green')
+                .mb-3.row
+                  .col-sm-4
+                  .col-sm-4.d-flex.justify-content-center
+                    button#deleteBooking.btn.btn-danger(type="submit") Xoá
+                  .col-sm-4
+                  .col-sm-12.d-flex.justify-content-center
+                    span#deleteBookingNoti(style='color: #dd2a2a') Không thể xoá booking này vì tour đang trong giai đoạn hoạt động
 
-  //-     function debounce(func, wait) {
-  //-       let timeout;
-  //-       return function(...args) {
-  //-         const later = () => {
-  //-           clearTimeout(timeout);
-  //-           func(...args);
-  //-         };
-  //-         clearTimeout(timeout);
-  //-         timeout = setTimeout(later, wait);
-  //-       };
-  //-     }
-
-  //-     const debouncedSearch = debounce(function() {
-  //-       const searchQuery = $('#searchGuide').val();
-  //-       const rowsPerBookingPage = $('.rowsPerBookingPage').val();
-  //-       console.log(searchQuery)
-  //-       updateTableAndPagination(1, rowsPerBookingPage, searchQuery);
-  //-     }, 300);
-
-  //-     $('#searchGuide').on('input', debouncedSearch);
-
-
-
-
-  //-     // validation
-  //-     const forms = document.querySelectorAll('.needs-validation')
-  //-     Array.from(forms).forEach(form => {
-  //-       form.addEventListener('submit', event => {
-  //-         event.preventDefault() // ngăn submit và reload
-  //-         event.stopPropagation()
-  //-         form.classList.add('was-validated')
-                    
-  //-       }, false)
-  //-     })
-           
-
-  //-     // hehehe
+              .col-sm-1
+          .modal-footer
+            button.btn.btn-secondary(type="button", data-bs-dismiss="modal") Đóng
+  script.
+    $(document).ready(function() {
+      function updateTableAndPagination(page, rowsPerBookingPage, searchQuery) {
+        $.get('/admin/booking', { page: page, rowsPerPage: rowsPerBookingPage, search: searchQuery }, function(data) {
+          $('#bookingTable').html(data.bookingTableHtml);
+          $('#paginationWrapper').html(data.paginationHtml);
+        });
+      }
       
-  //-   });
+      $(document).on('click', '.page-link', function(e) {
+        e.preventDefault();
+        const page = $(this).data('page');
+        const rowsPerBookingPage = $('.rowsPerBookingPage').val();
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth' 
+        });
+        const searchQuery = $('#searchBooking').val();
+        updateTableAndPagination(page, rowsPerBookingPage, searchQuery);
+      });
+
+      $('.rowsPerBookingPage').on('change', function() {
+        const rowsPerBookingPage = $(this).val();
+        const searchQuery = $('#searchBooking').val();
+        updateTableAndPagination(1, rowsPerBookingPage, searchQuery); 
+      });
+
+      function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      const debouncedSearch = debounce(function() {
+        const searchQuery = $('#searchBooking').val();
+        const rowsPerBookingPage = $('.rowsPerBookingPage').val();
+        console.log(searchQuery)
+        updateTableAndPagination(1, rowsPerBookingPage, searchQuery);
+      }, 300);
+
+      $('#searchBooking').on('input', debouncedSearch);
+
+
+
+
+    });

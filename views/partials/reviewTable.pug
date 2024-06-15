@@ -1,0 +1,74 @@
+table.table
+  thead
+    tr
+      th(scope="col") #
+      th(scope="col") Tên KH
+      th(scope="col") Email KH
+      th(scope="col") Tên Tour
+      th(scope="col") Đánh Giá
+      th(scope="col") Xếp Hạng
+      th(scope="col") Ngày Tạo
+      th(scope="col")
+  tbody
+    each review, index in reviews
+      tr
+        td(scope="row")= (pagination.currentPage - 1) * pagination.rowsPerPage + index + 1
+        - if(review.user)
+          td= `${review.user.name}`
+          td= `${review.user.email}`
+        - else 
+          td= `Người dùng đã xoá`
+          td= `Người dùng đã xoá`
+        - if(review.tour)
+          td= `${review.tour.name}`
+        - else 
+          td(style="color: gray")= `Tour đã xoá`
+        td= `${review.review}`
+        td= `${review.rating}`
+        td= `${review.createdAt.toLocaleString('vi', {day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'})}`
+        td.d-flex
+          button#btnDeleteReview.btn.btn-outline-danger(type="button", data-bs-toggle="modal", data-bs-target="#exampleModalDeleteReview", data-review=review)
+            svg#i-trash(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 30 30", width="14", height="14", fill="none", stroke="currentcolor", stroke-linecap="round", stroke-linejoin="round", stroke-width="2")
+              path(d="M28 6 L6 6 8 30 24 30 26 6 4 6 M16 12 L16 24 M21 12 L20 24 M11 12 L12 24 M12 6 L13 2 19 2 20 6")
+
+//- script.
+//-   document.addEventListener('DOMContentLoaded', (event) => {
+//-     $(document).on('show.bs.modal', event => {
+//-       if(event.target.id === 'exampleModalDeleteReview') {
+//-         //- if(event.relatedTarget.id === 'addTour')
+//-         const exampleModal = document.getElementById('exampleModalDeleteReview')
+//-         const button = event.relatedTarget
+//-         const review = JSON.parse(button.getAttribute('data-review'))
+//-         //- console.log(review._id)
+//-         //- const btnDeleteReview = document.getElementById('deleteReview')
+//-         //- console.log(btnDeleteReview)
+//-         $('#deleteReview').off('click');
+//-         $('#deleteReview').on('click', () => {
+//-         //- $('#deleteReview').addEventListener('click', () => {
+
+//-           console.log('click')
+//-           $.ajax({
+//-             url: `/api/v1/reviews/${review._id}`,
+//-             method: 'DELETE',
+//-             contentType: 'application/json',
+//-             success: function (response) {
+//-               console.log('Đã xoá review:', response);
+//-               $('#exampleModalDeleteReview').modal('hide');
+//-             },
+//-             error: function (xhr, status, error) {
+//-               console.error('Lỗi xoá review:', error);
+//-             }
+//-           });
+
+//-           Swal.fire({
+//-             position: "top",
+//-             icon: "success",
+//-             title: "Đã xoá review",
+//-             showConfirmButton: false,
+//-             timer: 2000
+//-           });
+//-         });      
+//-       }
+//-     });
+
+//-   })

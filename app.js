@@ -11,6 +11,7 @@ const app = express();
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const pug = require('pug');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -130,24 +131,50 @@ app.use('/api/v1/bookings', bookingRouter);
 app.use('/api/v1/categories', categoryRouter);
 app.use('/api/v1/locations', locationRouter);
 //////////
-app.get('/proxy/geonames', (req, res) => {
-    const { country, maxRows, username, featureCode } = req.query;
-    const options = {
-        hostname: 'api.geonames.org',
-        path: `/searchJSON?country=${country}&maxRows=${maxRows}&username=${username}&featureCode=${featureCode}`,
-        method: 'GET'
-    };
+// app.get('/proxy/geonames', (req, res) => {
+//     const { country, maxRows, username, featureCode } = req.query;
+//     const options = {
+//         hostname: 'api.geonames.org',
+//         path: `/searchJSON?country=${country}&maxRows=${maxRows}&username=${username}&featureCode=${featureCode}`,
+//         method: 'GET'
+//     };
 
-    http.request(options, (apiRes) => {
-        let data = '';
-        apiRes.on('data', (chunk) => {
-        data += chunk;
-        });
-        apiRes.on('end', () => {
-        res.send(data);
-        });
-    }).end();
-});
+//     http.request(options, (apiRes) => {
+//         let data = '';
+//         apiRes.on('data', (chunk) => {
+//         data += chunk;
+//         });
+//         apiRes.on('end', () => {
+//         res.send(data);
+//         });
+//     }).end();
+// });
+
+// Thiết lập middleware proxy
+// app.use('/proxy/geonames', createProxyMiddleware({
+//     target: 'http://api.geonames.org',
+//     changeOrigin: true,
+//     pathRewrite: {
+//       '^/proxy/geonames': '',
+//     },
+//     onProxyReq: (proxyReq, req, res) => {
+//       proxyReq.path += `?country=${req.query.country}&maxRows=${req.query.maxRows}&username=sang&featureCode=ADM1`;
+//     },
+//   }));
+
+// app.use('/proxy/geonames', createProxyMiddleware({
+//     target: 'http://api.geonames.org',
+//     changeOrigin: true,
+//     pathRewrite: (path, req) => {
+//         // Chuyển đổi đường dẫn yêu cầu để khớp với API Geonames
+//         return path.replace('/proxy/geonames', '');
+//     },
+//     onProxyReq: (proxyReq, req, res) => {
+//         // Thêm các tham số yêu cầu vào URL
+//         const queryString = `?country=${req.query.country}&maxRows=${req.query.maxRows}&username=sang&featureCode=ADM1`;
+//         proxyReq.path += queryString;
+//     }
+// }));
 /////////
 
 app.all('*', (req, res, next) => {

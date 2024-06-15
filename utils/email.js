@@ -9,14 +9,6 @@ module.exports = class Email {
     this.url = url;
     this.from = `Phan Phuoc Sang <${process.env.EMAIL_FROM}>`;
     if(bookingInfo) {
-      // this.tourName = bookingInfo.tourName;
-      // this.startDate = bookingInfo.startDate;
-      // this.duration = bookingInfo.duration;
-      // this.difficulty = bookingInfo.difficulty;
-      // this.price = bookingInfo.price;
-      // this.quantity = bookingInfo.quantity;
-      // this.qrCodeDataURL = bookingInfo.qrCodeDataURL;
-      // this.bookingDate = bookingInfo.bookingDate
       this.bookingInfo = bookingInfo
     }
   }
@@ -99,6 +91,13 @@ module.exports = class Email {
     await this.send(
       'ticket',
       'Xác nhận đặt tour'
+    );
+  }
+
+  async sendThankYou() {
+    await this.send(
+      'thankYou',
+      'Cảm Ơn Bạn Đã Đồng Hành! Để Lại Đánh Giá Của Bạn'
     );
   }
 };

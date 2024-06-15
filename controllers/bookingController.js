@@ -154,3 +154,16 @@ exports.getToursBookedByUser = catchAsync(async (req, res, next) => {
         tours
     });
 });
+
+
+exports.deleteBooking = catchAsync(async (req, res, next) => {
+    const booking = await Booking.findByIdAndDelete(req.params.id);
+    if(!booking) {
+        return next(new AppError('No booking found with that ID', 404));    
+    }
+
+    res.status(200).json({
+        status: 'success',
+        data: null
+    })
+});

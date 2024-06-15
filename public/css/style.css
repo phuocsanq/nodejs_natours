@@ -1834,6 +1834,7 @@ button{
 .reset-password-form,
 .request-reset-email-form,
 .singup-form,
+.review-form,
 .login-form {
   margin: 0 auto;
   max-width: 55rem;

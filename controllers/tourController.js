@@ -4,6 +4,10 @@ const Tour = require('./../models/tourModel');
 const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const Booking = require('../models/bookingModel');
+const mongoose = require('mongoose');
+const TourVersion = mongoose.model('tour_versions');
+const Email = require('../utils/email');
 
 const multerStorage = multer.memoryStorage();
 
@@ -116,6 +120,45 @@ exports.updateTourStatus = catchAsync(async (req, res, next) => {
         }
     })
 });
+
+exports.thankYouEmail = catchAsync(async (req, res, next) => {
+    // reset booking and send email
+    const tourId = req.body.tourId;
+
+    const tourVersion = await TourVersion.findOne({ refId: tourId });
+    const bookings = await Booking.find({ tourVersion : tourVersion.id , active: true }).populate('user');
+    // const users = bookings.map(booking => booking.user);
+
+
+
+    const emailPromises = bookings.map(booking => {
+        const userId = booking.user._id;
+        const bookingId = booking._id;
+        const url = `${req.protocol}://${req.get('host')}/review/${userId}/${tourId}/${bookingId}`;
+        return new Email(booking.user, url).sendThankYou();
+    });
+
+    await Promise.all(emailPromises);
+
+    // reset booking
+    await Booking.updateMany({ tourVersion: tourVersion.id, active: true }, { active: false });
+
+    res.status(200).json({
+        status: 'success'
+    })
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 // exports.createTour = catchAsync(async (req, res, next) => {
 //     console.log(req.body)

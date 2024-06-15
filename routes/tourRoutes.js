@@ -30,6 +30,9 @@ router
     .route('/update-tour-status')
     .patch(tourController.updateTourStatus);
 router
+    .route('/thank-you-email')
+    .post(tourController.thankYouEmail);
+router
     .route('/')
     .get(tourController.getAllTours)
     .post(authController.protect, authController.restrictTo('admin'), tourController.uploadTourImages, tourController.resizeTourImages, locationController.checkLocations, tourController.createTour);

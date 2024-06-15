@@ -1,0 +1,232 @@
+extends base
+
+block content
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    link(href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css", rel="stylesheet")
+    script(src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous")
+    script(src="https://cdn.jsdelivr.net/npm/sweetalert2@11")
+    title Form Reviews
+    style.
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+      }
+
+      :root {
+        --yellow: #FFBD13;
+        --blue: #4383FF;
+        --blue-d-1: #3278FF;
+        --light: #F5F5F5;
+        --grey: #AAA;
+        --white: #FFF;
+        --shadow: 8px 8px 30px rgba(0,0,0,.05);
+      }
+
+      //- body {
+      //-   background: var(--light);
+      //-   display: flex;
+      //-   justify-content: center;
+      //-   align-items: center;
+      //-   min-height: 100vh;
+      //-   padding: 1rem;
+      //- }
+
+      .wrapper-review {
+        background: var(--white);
+        padding: 2rem;
+        max-width: 576px;
+        width: 100%;
+        border-radius: .75rem;
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+      .wrapper-review h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+      .rating {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        grid-gap: .5rem;
+        font-size: 2rem;
+        color: var(--yellow);
+        margin-bottom: 2rem;
+      }
+      .rating .star {
+        cursor: pointer;
+      }
+      .rating .star.active {
+        opacity: 0;
+        animation: animate .5s calc(var(--i) * .1s) ease-in-out forwards;
+      }
+
+      @keyframes animate {
+        0% {
+          opacity: 0;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.2);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+
+      .rating .star:hover {
+        transform: scale(1.1);
+      }
+      textarea {
+        width: 100%;
+        background: var(--light);
+        padding: 1rem;
+        border-radius: .5rem;
+        border: none;
+        outline: none;
+        resize: none;
+        margin-bottom: .5rem;
+      }
+      .btn-group {
+        display: flex;
+        grid-gap: .5rem;
+        align-items: center;
+        justify-content: center
+      }
+      .btn-group .btn {
+        padding: .75rem 1rem;
+        border-radius: .5rem;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        font-size: .875rem;
+        font-weight: 500;
+      }
+      .btn-group .btn.submit {
+        background: var(--blue);
+        color: var(--white);
+      }
+      .btn-group .btn.submit:hover {
+        background: var(--blue-d-1);
+      }
+      .btn-group .btn.cancel {
+        background: var(--white);
+        color: var(--blue);
+      }
+      .btn-group .btn.cancel:hover {
+        background: var(--light);
+      }
+      .incorect-url {
+        display: flex;
+        justify-content: center
+      }
+
+    main.main.zoom1-3
+      - if(booking)
+        - if(reviewCount < bookingCount)
+          .wrapper-review.review-form
+            h3 Điểm đánh giá
+            //- form
+            .rating
+              input(type="number", name="rating", hidden)
+              i.bx.bx-star.star(style="--i: 0;")
+              i.bx.bx-star.star(style="--i: 1;")
+              i.bx.bx-star.star(style="--i: 2;")
+              i.bx.bx-star.star(style="--i: 3;")
+              i.bx.bx-star.star(style="--i: 4;")
+            textarea#opinionInput(name="opinion", cols="30", rows="5", placeholder="Tóm tắt ngắn gọn về trải nghiệm của bạn ...")
+            .btn-group
+              button#btnSaveReview.btn.submit Lưu đánh giá
+        - else 
+          .incorect-url
+            h3 Cảm ơn bạn đã đánh giá tour du lịch! Chúng tôi rất trân trọng đánh giá của bạn. Do bạn đã đánh giá tour này rồi, bạn không thể gửi thêm đánh giá nữa.
+      - else 
+        .incorect-url
+          h3 Bạn đã cố gắng truy cập vào một trang đánh giá không tồn tại. Vui lòng sử dụng URL đánh giá chính xác được cung cấp.
+    script.
+      const allStar = document.querySelectorAll('.rating .star')
+      const ratingValue = document.querySelector('.rating input')
+
+      allStar.forEach((item, idx)=> {
+        item.addEventListener('click', function () {
+          let click = 0
+          ratingValue.value = idx + 1
+
+          allStar.forEach(i=> {
+            i.classList.replace('bxs-star', 'bx-star')
+            i.classList.remove('active')
+          })
+
+          for(let i=0; i<allStar.length; i++) {
+            if(i <= idx) {
+              allStar[i].classList.replace('bx-star', 'bxs-star')
+              allStar[i].classList.add('active')
+            } else {
+              allStar[i].style.setProperty('--i', click)
+              click++
+            }
+          }
+        })
+      })
+
+      btnSaveReview.addEventListener('click', function () {
+        const rating = ratingValue.value
+        const opinion = opinionInput.value
+    
+        const urlObject = new URL(window.location.href);
+        const pathParts = urlObject.pathname.split('/');
+
+        const userId = pathParts[pathParts.length - 3];
+        const tourId = pathParts[pathParts.length - 2];
+        const bookingId = pathParts[pathParts.length - 1];
+
+
+        console.log('user id:', userId)
+        console.log('tour id:', tourId)
+        console.log('booking id:', bookingId)
+        console.log('Rating:', rating)
+        console.log('Opinion:', opinion)
+
+        if(!rating || !opinion) {
+          Swal.fire({
+            position: "top",
+            icon: "warning",
+            title: "Vui lòng chọn điểm và viết đánh giá của bạn",
+            showConfirmButton: false,
+            timer: 1500
+          });
+        } else {
+          $.ajax({
+            url: '/api/v1/reviews',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ user: userId, tour: tourId , rating: rating, review: opinion}),
+            success: function (response) {
+              console.log('Review created:', response);
+              Swal.fire({
+                position: "top",
+                icon: "success",
+                title: "Đánh giá tour thành công",
+                showConfirmButton: false,
+                timer: 1500
+              });
+              setTimeout(function() {
+                window.location.href = '/';
+              }, 2000);
+            },
+            error: function (xhr, status, error) {
+              console.error('Failed to create review:', error);
+            }
+          });
+        }
+      })
+
+

@@ -19,11 +19,13 @@ router.get('/my-bills', authController.protect, viewsController.getMyBills);
 router.get('/requestResetEmail', authController.isLoggedIn, viewsController.getRequestResetEmailForm);
 router.get('/resetPassword/:token', authController.isLoggedIn, viewsController.getResetPasswordForm);
 router.get('/admin', authController.isLoggedIn, authController.restrictTo('admin'), viewsController.getAdminForm);
+router.get('/review/:userId/:tourId/:bookingId', authController.isLoggedIn, viewsController.getReviewForm);
 // router.get('/admin/tour', authController.isLoggedIn, authController.restrictTo('admin'), viewsController.getAdminTourForm);
 // router.get('/admin/user', authController.isLoggedIn, authController.restrictTo('admin'), viewsController.getAdminUserForm);
 router.get('/admin/user', authController.isLoggedIn, authController.restrictTo('admin'), viewsController.getAdminUserPage);
 router.get('/admin/guide', authController.isLoggedIn, authController.restrictTo('admin'), viewsController.getAdminGuidePage);
 router.get('/admin/tour', authController.isLoggedIn, authController.restrictTo('admin'), viewsController.getAdminTourPage);
 router.get('/admin/booking', authController.isLoggedIn, authController.restrictTo('admin'), viewsController.getAdminBookingPage);
+router.get('/admin/review', authController.isLoggedIn, authController.restrictTo('admin'), viewsController.getAdminReviewPage);
 
 module.exports = router;

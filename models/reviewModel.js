@@ -108,8 +108,8 @@ reviewSchema.pre(/^find/, function(next) {
     //     select: 'name photo'
     // });
     this.populate({
-        path: 'user',
-        select: 'name photo'
+        path: 'user'
+        // select: 'name photo'
     });
     next();
 });

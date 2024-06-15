@@ -10,6 +10,7 @@ import { getSearchTourForm } from './searchTour';
 import { updateUserInfor, updateUserPassword } from './updateUser'
 import { createUser } from './createUser'
 import { deleteUser } from './deleteUser'
+import { deleteBooking } from './deleteBooking'
 import { createTour } from './createTour'
 import { saveTour } from './saveTour'
 import { deleteTour } from './deleteTour'
@@ -42,6 +43,7 @@ const btnChangGuidePass = document.getElementById('changGuidePass');
 const btnAddGuide = document.getElementById('btnAddGuide');
 const btnDeleteGuide = document.getElementById('deleteGuide');
 const btnDeleteTour = document.getElementById('deleteTour');
+const btnDeleteBooking = document.getElementById('deleteBooking');
 
 const addTourForm = document.querySelector('.form--add-tour');
 
@@ -620,4 +622,16 @@ if(btnDeleteTour)
     deleteTour(id, page, rowsPerPage, searchQuery);
   });
 
+if(btnDeleteBooking)
+  btnDeleteBooking.addEventListener('click', async () => {
+
+    const exampleModal = document.getElementById('exampleModalDeleteBooking');
+
+    const id = exampleModal.querySelector('.modal-body label#deleteBookingId').textContent;
+
+    const searchQuery = $('#searchBooking').val();
+    const page = $('.page-link').data('page');
+    const rowsPerPage = $('.rowsPerBookingPage').val();
+    deleteBooking(id, page, rowsPerPage, searchQuery);
+  });
 
