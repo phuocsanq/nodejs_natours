@@ -540,8 +540,10 @@ li.list-group-item:hover {
 
 .header {
   /* background-color: #444; */
-  /* background-color: #d3d3d3; */
-  background-color: rgb(191 194 197);
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 4px 12px rgba(0, 0, 0, .08);
+  z-index: 1010;
+  /* background-color: rgb(191 194 197); */
   padding: 0 5rem;
   height: 6rem;
   position: relative;
@@ -1267,8 +1269,8 @@ li.list-group-item:hover {
 .nav__el,
 .nav__el:link,
 .nav__el:visited {
-  color: #f7f7f7;
-  /* color: rgb(45, 66, 113); */
+  /* color: #f7f7f7; */
+  color: #2d2f31;
   text-transform: uppercase;
   font-size: 1.6rem;
   text-decoration: none;

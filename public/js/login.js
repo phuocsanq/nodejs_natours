@@ -18,7 +18,7 @@ export const login = async (email, password, redirectUrl) => {
       // console.log('ROLE---', res.data.data.user.role);
       if(res.data.data.user.role === 'admin') {
         window.setTimeout(() => {
-          location.assign('/admin');
+          location.assign('/admin/tour');
         }, 1500);
       }
       else {

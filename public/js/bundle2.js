@@ -12051,7 +12051,7 @@ var login = exports.login = /*#__PURE__*/function () {
             // console.log('ROLE---', res.data.data.user.role);
             if (res.data.data.user.role === 'admin') {
               window.setTimeout(function () {
-                location.assign('/admin');
+                location.assign('/admin/tour');
               }, 1500);
             } else {
               window.setTimeout(function () {
@@ -13901,7 +13901,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59816" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "44049" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
