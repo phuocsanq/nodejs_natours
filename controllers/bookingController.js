@@ -15,7 +15,7 @@ exports.createPaymentLink = catchAsync(async (req, res, next) => {
 
     const body = {
         orderCode: Date.now(),  //
-        amount: tour.price * quantity,
+        amount: tour.price * (1 - tour.priceDiscount / 100) * quantity,
         description: "Thanh toan don hang",
         // buyerName: req.user.name,
         buyerEmail: req.user.email,
