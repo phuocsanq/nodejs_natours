@@ -1039,7 +1039,7 @@ block content
           section.mb-3.fontsize15.color2d4271.mr-50.ml-20
             h1.py-4.h2.fw-bold.heading.text-center= title 
             .py-2
-              p.card-text.mb-1.text-justify= `${destination ? locationDescription[0] : ``}`
+              p.card-text.mb-1.text-justify= `${(destination && locationDescription[0]) ? locationDescription[0] : ``}`
               //-   | Quý khách chụp hình lưu niệm tại Quảng Trường Hùng Vương: hình ảnh cây đàn kìm cách điệu (cao 18,6 m) nhạc cụ không thể thiếu trong đờn ca tài tử cải lương, biểu tượng văn hóa của tỉnh Bạc Liêu.
               //- div
               //-   strong.mx-1
