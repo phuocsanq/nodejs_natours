@@ -4,13 +4,13 @@ const mongoose = require('mongoose');
 const locationSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'A location must have a name'],
+        required: [true, 'Một địa điểm phải có tên'],
         unique: true,
         trim: true
     },
     country: {
         type: String,
-        required: [true, 'A location must have a country'],
+        required: [true, 'Một địa điểm phải có quốc gia'],
         trim: true
     },
     description: {

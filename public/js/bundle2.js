@@ -12047,7 +12047,7 @@ var login = exports.login = /*#__PURE__*/function () {
         case 3:
           res = _context.sent;
           if (res.data.status === 'success') {
-            (0, _alerts.showAlert)('success', 'Đăng nhập thành công!');
+            (0, _alerts.showAlert)('success', 'Đăng nhập thành công');
             // console.log('ROLE---', res.data.data.user.role);
             if (res.data.data.user.role === 'admin') {
               window.setTimeout(function () {
@@ -12184,7 +12184,11 @@ var updateSettings = exports.updateSettings = /*#__PURE__*/function () {
         case 4:
           res = _context.sent;
           if (res.data.status === 'success') {
-            (0, _alerts.showAlert)('success', "".concat(type.toUpperCase(), " updated successfully!"));
+            if (type.toUpperCase() === 'DATA') {
+              (0, _alerts.showAlert)('success', "C\u1EADp nh\u1EADt th\xF4ng tin th\xE0nh c\xF4ng!");
+            } else {
+              (0, _alerts.showAlert)('success', "C\u1EADp nh\u1EADt m\u1EADt kh\u1EA9u th\xE0nh c\xF4ng!");
+            }
           }
           _context.next = 11;
           break;
@@ -12289,7 +12293,7 @@ var resetPassword = exports.resetPassword = /*#__PURE__*/function () {
         case 3:
           res = _context.sent;
           if (res.data.status === 'success') {
-            (0, _alerts.showAlert)('success', 'Password Changed');
+            (0, _alerts.showAlert)('success', 'Thay đổi mật khẩu thành công');
             // alert('Logged in successfully!');
             window.setTimeout(function () {
               location.assign('/login');
@@ -13608,6 +13612,11 @@ if (btnDeleteGuide) btnDeleteGuide.addEventListener('click', /*#__PURE__*/_async
 if (addTourForm) {
   // Add the event listener for the "Add Tour" button
   $('#btnAddTour').on('click', function () {
+    var coordinatesStr = $('#tourStartCoordinate').val();
+    var coordinatesArr = coordinatesStr.split(',').map(function (coord) {
+      return coord.trim();
+    });
+    var reversedCoordinates = "".concat(coordinatesArr[1], ",").concat(coordinatesArr[0]);
     var tourData = {
       name: $('#tourName').val(),
       category: $('#categorySelect').val(),
@@ -13622,23 +13631,29 @@ if (addTourForm) {
       startDate: $('#tourStartDate').val(),
       // startLocation
       startLocation: {
-        coordinates: $('#tourStartCoordinate').val(),
+        // coordinates: $('#tourStartCoordinate').val(),
+        coordinates: reversedCoordinates,
         address: $('#tourStartAddress').val(),
         description: $('#tourStartProvince').val()
       },
       country: $('#countrySelect').val(),
       provinces: [],
-      //
       guides: [],
       itineraries: []
     };
 
     // Collect itineraries
     $('.itinerary-item').each(function (index) {
+      var itineraryCoordinatesStr = $(this).find('input[name^="itineraries"][name$="[coordinates]"]').val();
+      var itineraryCoordinatesArr = itineraryCoordinatesStr.split(',').map(function (coord) {
+        return coord.trim();
+      });
+      var reversedItineraryCoordinates = "".concat(itineraryCoordinatesArr[1], ",").concat(itineraryCoordinatesArr[0]);
       var itineraryItem = {
         day: index + 1,
         address: $(this).find('input[name^="itineraries"][name$="[address]"]').val(),
-        coordinates: $(this).find('input[name^="itineraries"][name$="[coordinates]"]').val(),
+        // coordinates: $(this).find('input[name^="itineraries"][name$="[coordinates]"]').val(),
+        coordinates: reversedItineraryCoordinates,
         description: $(this).find('textarea[name^="itineraries"][name$="[description]"]').val()
       };
       tourData.itineraries.push(itineraryItem);
@@ -13761,6 +13776,11 @@ if (addTourForm) {
     // console.log(tourData)
   });
   $('#btnSaveTour').on('click', function () {
+    var coordinatesStr = $('#tourStartCoordinate').val();
+    var coordinatesArr = coordinatesStr.split(',').map(function (coord) {
+      return coord.trim();
+    });
+    var reversedCoordinates = "".concat(coordinatesArr[1], ",").concat(coordinatesArr[0]);
     var tourData = {
       name: $('#tourName').val(),
       category: $('#categorySelect').val(),
@@ -13775,7 +13795,8 @@ if (addTourForm) {
       startDate: $('#tourStartDate').val(),
       // startLocation
       startLocation: {
-        coordinates: $('#tourStartCoordinate').val(),
+        // coordinates: $('#tourStartCoordinate').val(),
+        coordinates: reversedCoordinates,
         address: $('#tourStartAddress').val(),
         description: $('#tourStartProvince').val()
       },
@@ -13788,10 +13809,16 @@ if (addTourForm) {
 
     // Collect itineraries
     $('.itinerary-item').each(function (index) {
+      var itineraryCoordinatesStr = $(this).find('input[name^="itineraries"][name$="[coordinates]"]').val();
+      var itineraryCoordinatesArr = itineraryCoordinatesStr.split(',').map(function (coord) {
+        return coord.trim();
+      });
+      var reversedItineraryCoordinates = "".concat(itineraryCoordinatesArr[1], ",").concat(itineraryCoordinatesArr[0]);
       var itineraryItem = {
         day: index + 1,
         address: $(this).find('input[name^="itineraries"][name$="[address]"]').val(),
-        coordinates: $(this).find('input[name^="itineraries"][name$="[coordinates]"]').val(),
+        // coordinates: $(this).find('input[name^="itineraries"][name$="[coordinates]"]').val(),
+        coordinates: reversedItineraryCoordinates,
         description: $(this).find('textarea[name^="itineraries"][name$="[description]"]').val()
       };
       tourData.itineraries.push(itineraryItem);
@@ -13901,7 +13928,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "44049" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "25596" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

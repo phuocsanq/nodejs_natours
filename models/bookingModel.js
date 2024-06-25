@@ -4,7 +4,7 @@ const bookingSchema = new mongoose.Schema({
     tourVersion: {
         type: mongoose.Schema.ObjectId,
         ref: 'tour_versions',
-        required: [true, 'Booking must belong to a Tour!']
+        required: [true, 'Booking phải thuộc về một Tour du lịch!']
     },
     version: {
         type: Number,
@@ -13,7 +13,7 @@ const bookingSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
-        required: [true, 'Booking must belong to a User!']
+        required: [true, 'Booking phải thuộc về một User!']
     },
     // price: {
     //     type: Number,
@@ -21,7 +21,7 @@ const bookingSchema = new mongoose.Schema({
     // },
     quantity: {
         type: Number,
-        require: [true, 'Booking must have a quantity.']
+        require: [true, 'Booking phải có số lượng!']
     },
     createdAt: {
         type: Date,

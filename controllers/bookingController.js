@@ -25,8 +25,8 @@ exports.createPaymentLink = catchAsync(async (req, res, next) => {
             price: tour.price * (1 - tour.priceDiscount / 100)
         }],
             // cancelUrl: `${req.protocol}://${req.get('host')}/?tour=${req.params.tourId}&user=${req.user.id}&price=${tour.price}&quantity=${quantity}`,
-            cancelUrl: `${req.protocol}://${req.get('host')}/tour/${tour.slug}/my-ticket/?tour=${req.params.tourId}&user=${req.user.id}&price=${tour.price}&quantity=${quantity}`,
-            returnUrl: `${req.protocol}://${req.get('host')}/tour/${tour.slug}/bookingInfor`
+            returnUrl: `${req.protocol}://${req.get('host')}/tour/${tour.slug}/my-ticket/?tour=${req.params.tourId}&user=${req.user.id}&price=${tour.price}&quantity=${quantity}`,
+            cancelUrl: `${req.protocol}://${req.get('host')}/tour/${tour.slug}/booking-infor`
             // đang hoán đổi url để tránh tốn giao dịch, hiển thị huỷ trong payos -> kệ
     };
       

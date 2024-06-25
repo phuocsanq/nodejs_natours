@@ -17,7 +17,11 @@ export const updateSettings = async (data, type) => {
     });
 
     if (res.data.status === 'success') {
-      showAlert('success', `${type.toUpperCase()} updated successfully!`);
+      if(type.toUpperCase() === 'DATA') {
+        showAlert('success', `Cập nhật thông tin thành công!`);
+      } else {
+        showAlert('success', `Cập nhật mật khẩu thành công!`);
+      }
     }
   } catch (err) {
     showAlert('error', err.response.data.message);

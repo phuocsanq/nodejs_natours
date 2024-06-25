@@ -4,7 +4,7 @@ const Tour = require('./tourModel');
 const reviewSchema = new mongoose.Schema({
     review: {
         type: String,
-        require: [true, 'Review can not be empty']
+        require: [true, 'Review không được trống']
     },
     rating: {
         type: Number,
@@ -14,12 +14,12 @@ const reviewSchema = new mongoose.Schema({
     tour: {
         type: mongoose.Schema.ObjectId,
         ref: 'Tour',
-        require: [true, 'Review must belong to a tour']
+        require: [true, 'Review phải thuộc về một tour']
     },
     user: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
-        require: [true, 'Review must belong to a user']
+        require: [true, 'Review phải thuộc về một user']
     },
     createdAt: {
         type: Date,

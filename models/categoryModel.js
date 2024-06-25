@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const categorySchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'A category must have a name'],
+        required: [true, 'Một danh mục phải có tên'],
         unique: true,
         trim: true
     },

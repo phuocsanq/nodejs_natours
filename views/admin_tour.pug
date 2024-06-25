@@ -159,7 +159,7 @@ block content_admin
                       .mb-3.row
                         label.col-sm-4.col-form-label Toạ độ
                         .col-sm-8
-                          input#itinerary-0-coordinates.form-control(style='font-size: 12px', aria-label="Default select example", name="itineraries[0][coordinates]" required)  
+                          input#itinerary-0-coordinates.form-control(style='font-size: 12px', aria-label="Default select example", name="itineraries[0][coordinates]" required, placeholder="vĩ độ, kinh độ")  
                       .row
                         label.col-sm-2.col-form-label Mô tả
                         .col-sm-10
@@ -578,7 +578,9 @@ block content_admin
           // startLocation
           tourStartProvince.value = `${tour.startLocation.description}`
           tourStartAddress.value = `${tour.startLocation.address}`
-          tourStartCoordinate.value = `${tour.startLocation.coordinates}`
+          const tourStartCoordinateStr = `${tour.startLocation.coordinates}`
+          const tourStartCoordinateArr = tourStartCoordinateStr.split(',').map(coord => coord.trim());
+          tourStartCoordinate.value = `${tourStartCoordinateArr[1]},${tourStartCoordinateArr[0]}`;
 
         } else if(event.relatedTarget.id === 'btnDeleteTour') {
           const exampleModal = document.getElementById('exampleModalDeleteTour')
@@ -955,6 +957,9 @@ block content_admin
         const itineraryIndex = itinerariesContainer.querySelectorAll('.itinerary-item').length;;
         itineraryCount = itineraryIndex + 1;
 
+        const itineraryCoordinatesStr = `${itinerary.coordinates}`;
+        const itineraryCoordinatesArr = itineraryCoordinatesStr.split(',').map(coord => coord.trim());
+        const reversedItineraryCoordinates = `${itineraryCoordinatesArr[1]},${itineraryCoordinatesArr[0]}`;
 
         const itineraryItem = document.createElement('div');
         itineraryItem.classList.add('itinerary-item', 'mb-3', 'row');
@@ -971,7 +976,7 @@ block content_admin
           <div class="mb-3 row">
             <label class="col-sm-4 col-form-label">Toạ độ</label>
             <div class="col-sm-8">
-              <input value="${itinerary.coordinates}" style='font-size: 12px' class="form-control" id="itinerary-${itineraryIndex}-coordinates" name="itineraries[${itineraryIndex}][coordinates]" required>
+              <input value="${reversedItineraryCoordinates}" style='font-size: 12px' class="form-control" id="itinerary-${itineraryIndex}-coordinates" name="itineraries[${itineraryIndex}][coordinates]" required placeholder="vĩ độ, kinh độ">
             </div>
           </div>
           <div class="row">
@@ -1080,7 +1085,7 @@ block content_admin
           <div class="mb-3 row">
             <label class="col-sm-4 col-form-label">Toạ độ</label>
             <div class="col-sm-8">
-              <input style='font-size: 12px' class="form-control" id="itinerary-${itineraryCount - 1}-coordinates" name="itineraries[${itineraryCount - 1}][coordinates]" required>
+              <input style='font-size: 12px' class="form-control" id="itinerary-${itineraryCount - 1}-coordinates" name="itineraries[${itineraryCount - 1}][coordinates]" required placeholder="vĩ độ, kinh độ">
             </div>
           </div>
           <div class="row">

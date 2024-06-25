@@ -14,7 +14,7 @@ export const login = async (email, password, redirectUrl) => {
     });
 
     if (res.data.status === 'success') {
-      showAlert('success', 'Đăng nhập thành công!');
+      showAlert('success', 'Đăng nhập thành công');
       // console.log('ROLE---', res.data.data.user.role);
       if(res.data.data.user.role === 'admin') {
         window.setTimeout(() => {

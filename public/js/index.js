@@ -353,6 +353,10 @@ if(btnDeleteGuide)
 if(addTourForm) {
   // Add the event listener for the "Add Tour" button
   $('#btnAddTour').on('click', function() {
+    const coordinatesStr = $('#tourStartCoordinate').val();
+    const coordinatesArr = coordinatesStr.split(',').map(coord => coord.trim());
+    const reversedCoordinates = `${coordinatesArr[1]},${coordinatesArr[0]}`;
+
     const tourData = {
       name: $('#tourName').val(),
       category: $('#categorySelect').val(),  
@@ -367,26 +371,28 @@ if(addTourForm) {
       startDate: $('#tourStartDate').val(),
       // startLocation
       startLocation: {
-        coordinates: $('#tourStartCoordinate').val(),
+        // coordinates: $('#tourStartCoordinate').val(),
+        coordinates: reversedCoordinates,
         address: $('#tourStartAddress').val(),
         description: $('#tourStartProvince').val()
       },
       country: $('#countrySelect').val(),
       provinces: [],   
-      
-      
-      //
       guides: [],                                
       itineraries: []                             
-
     };
 
     // Collect itineraries
     $('.itinerary-item').each(function(index) {
+      const itineraryCoordinatesStr = $(this).find('input[name^="itineraries"][name$="[coordinates]"]').val();
+      const itineraryCoordinatesArr = itineraryCoordinatesStr.split(',').map(coord => coord.trim());
+      const reversedItineraryCoordinates = `${itineraryCoordinatesArr[1]},${itineraryCoordinatesArr[0]}`;
+
       const itineraryItem = {
           day: index + 1,
           address: $(this).find('input[name^="itineraries"][name$="[address]"]').val(),
-          coordinates: $(this).find('input[name^="itineraries"][name$="[coordinates]"]').val(),
+          // coordinates: $(this).find('input[name^="itineraries"][name$="[coordinates]"]').val(),
+          coordinates: reversedItineraryCoordinates,
           description: $(this).find('textarea[name^="itineraries"][name$="[description]"]').val()
       };
       tourData.itineraries.push(itineraryItem);
@@ -515,6 +521,10 @@ if(addTourForm) {
   });
 
   $('#btnSaveTour').on('click', function() {
+    const coordinatesStr = $('#tourStartCoordinate').val();
+    const coordinatesArr = coordinatesStr.split(',').map(coord => coord.trim());
+    const reversedCoordinates = `${coordinatesArr[1]},${coordinatesArr[0]}`;
+
     const tourData = {
       name: $('#tourName').val(),
       category: $('#categorySelect').val(),  
@@ -529,7 +539,8 @@ if(addTourForm) {
       startDate: $('#tourStartDate').val(),
       // startLocation
       startLocation: {
-        coordinates: $('#tourStartCoordinate').val(),
+        // coordinates: $('#tourStartCoordinate').val(),
+        coordinates: reversedCoordinates,
         address: $('#tourStartAddress').val(),
         description: $('#tourStartProvince').val()
       },
@@ -545,10 +556,15 @@ if(addTourForm) {
 
     // Collect itineraries
     $('.itinerary-item').each(function(index) {
+      const itineraryCoordinatesStr = $(this).find('input[name^="itineraries"][name$="[coordinates]"]').val();
+      const itineraryCoordinatesArr = itineraryCoordinatesStr.split(',').map(coord => coord.trim());
+      const reversedItineraryCoordinates = `${itineraryCoordinatesArr[1]},${itineraryCoordinatesArr[0]}`;
+      
       const itineraryItem = {
           day: index + 1,
           address: $(this).find('input[name^="itineraries"][name$="[address]"]').val(),
-          coordinates: $(this).find('input[name^="itineraries"][name$="[coordinates]"]').val(),
+          // coordinates: $(this).find('input[name^="itineraries"][name$="[coordinates]"]').val(),
+          coordinates: reversedItineraryCoordinates,
           description: $(this).find('textarea[name^="itineraries"][name$="[description]"]').val()
       };
       tourData.itineraries.push(itineraryItem);

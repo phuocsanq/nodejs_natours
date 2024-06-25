@@ -6,15 +6,15 @@ const { strategy } = require('sharp');
 const tourSchema = new mongoose.Schema({
     name: {
         type: String,
-        require: [true, 'A tour must have a name'],
+        require: [true, 'Một tour du lịch phải có tên'],
         trim: true,
-        minlength: [7, 'A tour name must have more or equal 7 characters'],
-        maxlength: [40, 'A tour name must have less or equal 40 characters']
+        minlength: [7, 'Tên tour du lịch phải có ít nhất 7 ký tự'],
+        // maxlength: [60, 'Tên tour du lịch có tối đa 60 ký tự']
     },
     category: {
         type: mongoose.Schema.ObjectId,
         ref: 'Category',
-        required: [true, 'A tour must belong to a category']
+        required: [true, 'Một tour du lịch phải thuộc về một danh mục']
     },
     slug : String,
     active: {
@@ -23,11 +23,11 @@ const tourSchema = new mongoose.Schema({
     },
     duration: {
         type: Number,
-        require: [true, 'A tour must have a duration']
+        require: [true, 'Một tour du lịch phải có thời lượng']
     },
     maxGroupSize: {
         type: Number,
-        require: [true, 'A tour must have a group size']
+        require: [true, 'Một tour du lịch phải có số lượng người tham gia tối đa']
     },
     currentGroupSize: {
         type: Number,
@@ -36,14 +36,14 @@ const tourSchema = new mongoose.Schema({
             validator: function(val) {
                 return val <= this.maxGroupSize;
             },
-            message: 'Current group size ({VALUE}) should be below or equal to max group size'
+            message: 'Số lượng người tham gia hiện tại ({VALUE}) phải nhỏ hơn hoặc bằng số lượng người tham gia tối đa'
         }
     },
     ratingsAverage: {
         type : Number,
         default: 4.5,
-        min: [1, 'Rating must be above 1.0'],
-        max: [5, 'Rating must be below 5.0'],
+        min: [1, 'Xếp hạng phải lớn hơn hoặc bằng 1.0'],
+        max: [5, 'Xếp hạng không được vượt quá 5.0'],
         set: val => Math.round(val * 10) / 10
     },
     ratingsQuantity: {
@@ -52,7 +52,7 @@ const tourSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        require: [true, 'A tour must have a price']
+        require: [true, 'Một tour du lịch phải có giá']
     },
     priceDiscount: {
         type: Number,
@@ -61,22 +61,22 @@ const tourSchema = new mongoose.Schema({
             validator: function(val) {
                 return val < 100;
             },
-            message: 'Discount rate ({VALUE}) should be below 100%'
+            message: 'Tỷ lệ giảm giá ({VALUE}) phải nhỏ hơn 100%.'
         }
     },
     summary: {
         type: String,
         trim: true,
-        require: [true, 'A tour must have a summary']
+        require: [true, 'Một tour du lịch phải có tóm tắt']
     },
     description: {
         type: String,
         trim: true,
-        require: [true, 'A tour must have a description']
+        require: [true, 'Một tour du lịch phải có mô tả']
     },
     imageCover: {
         type: String,
-        require: [true, 'A tour must have a cover image']
+        require: [true, 'Một tour du lịch phải có ảnh bìa']
     },
     images: [String],
     createdAt: {
@@ -99,7 +99,7 @@ const tourSchema = new mongoose.Schema({
         {
             type: mongoose.Schema.ObjectId,
             ref: 'Location',
-            required: [true, 'A tour must have at least one location']
+            required: [true, 'Một tour du lịch phải có ít nhất một địa điểm']
         }
     ],
     itineraries: [

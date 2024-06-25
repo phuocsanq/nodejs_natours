@@ -14,7 +14,7 @@ export const resetPassword = async (password, passwordConfirm, resetToken) => {
     });
 
     if (res.data.status === 'success') {
-      showAlert('success', 'Password Changed');
+      showAlert('success', 'Thay đổi mật khẩu thành công');
       // alert('Logged in successfully!');
       window.setTimeout(() => {
         location.assign('/login');
