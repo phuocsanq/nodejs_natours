@@ -122,7 +122,7 @@ exports.updateTourStatus = catchAsync(async (req, res, next) => {
 });
 
 exports.thankYouEmail = catchAsync(async (req, res, next) => {
-    // reset booking and send email
+    // reset booking, reset current tour size and send email
     const tourId = req.body.tourId;
 
     const tourVersion = await TourVersion.findOne({ refId: tourId });
@@ -142,6 +142,9 @@ exports.thankYouEmail = catchAsync(async (req, res, next) => {
 
     // reset booking
     await Booking.updateMany({ tourVersion: tourVersion.id, active: true }, { active: false });
+
+    // reset currentGroupSize to 0
+    await Tour.findByIdAndUpdate(tourId, { currentGroupSize: 0 });
 
     res.status(200).json({
         status: 'success'

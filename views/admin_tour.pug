@@ -153,7 +153,7 @@ block content_admin
                       .mb-3.row   
                         span Lịch trình ngày 1
                       .mb-3.row
-                        label.col-sm-4.col-form-label Địa chỉ chi tiết
+                        label.col-sm-4.col-form-label Địa điểm
                         .col-sm-8
                           input#itinerary-0-id.form-control(style='font-size: 12px', aria-label="Default select example", name="itineraries[0][address]", required)   
                       .mb-3.row
@@ -968,7 +968,7 @@ block content_admin
             <span>Lịch trình ngày ${itineraryIndex + 1}</span>
           </div>
           <div class="mb-3 row">
-            <label class="col-sm-4 col-form-label">Địa chỉ chi tiết</label>
+            <label class="col-sm-4 col-form-label">Địa điểm</label>
             <div class="col-sm-8">
               <input value="${itinerary.address}" style='font-size: 12px' class="form-control" id="itinerary-${itineraryIndex}-id" name="itineraries[${itineraryIndex}][address]" required>
             </div>
@@ -1077,7 +1077,7 @@ block content_admin
             <span>Lịch trình ngày ${itineraryCount}</span>
           </div>
           <div class="mb-3 row">
-            <label class="col-sm-4 col-form-label">Địa chỉ chi tiết</label>
+            <label class="col-sm-4 col-form-label">Địa điểm</label>
             <div class="col-sm-8">
               <input style='font-size: 12px' class="form-control" id="itinerary-${itineraryCount - 1}-id" name="itineraries[${itineraryCount - 1}][address]" required>
             </div>
